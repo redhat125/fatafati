@@ -55,22 +55,20 @@ export function Footer() {
                 Explore
               </h4>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <li><Link href="/?genre=cyberpunk">Cyberpunk Universe</Link></li>
-                <li><Link href="/?genre=horror">Gothic Horror</Link></li>
-                <li><Link href="/?genre=space">Deep Space Odyssey</Link></li>
-                <li><Link href="/?genre=thriller">High-Speed Thriller</Link></li>
+                <li><Link href="/?genre=reality-show">Reality</Link></li>
+                <li><Link href="/?genre=cyberpunk">Cyberpunk</Link></li>
+                <li><Link href="/?genre=horror">Horror</Link></li>
+                <li><Link href="/?genre=space">Space</Link></li>
+                <li><Link href="/?genre=thriller">Thriller</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-purple)', marginBottom: '14px' }}>
-                Architecture
+                Contact Us
               </h4>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <li>Next.js 15 & Express TS</li>
-                <li>Supabase PostgreSQL</li>
-                <li>Cloudflare R2 Ready</li>
-                <li>DAG Branching Engine</li>
+                <li><Link href="mailto:[EMAIL_ADDRESS]">[EMAIL_ADDRESS]</Link></li>
               </ul>
             </div>
           </div>

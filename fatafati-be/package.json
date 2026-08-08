@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "vercel-build": "echo 'Backend serverless deployment ready'",
+    "vercel-build": "npm run build --prefix=../packages/common || true",
     "seed": "tsx src/db/seedSupabase.ts",
     "start": "node dist/server.js",
     "test": "vitest run"

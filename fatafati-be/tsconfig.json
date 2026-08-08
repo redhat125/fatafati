@@ -9,10 +9,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "@fatafati/common": ["../packages/common/src/index.ts"]
-    }
+    "resolveJsonModule": true
   },
   "include": ["src/**/*", "api/**/*", "tests/**/*"]
 }

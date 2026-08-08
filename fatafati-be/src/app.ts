@@ -42,8 +42,9 @@ export function createApp(): express.Application {
     });
   });
 
-  // Mount API router
+  // Mount API router (supports both /api/* and root /* endpoints)
   app.use('/api', apiRouter);
+  app.use('/', apiRouter);
 
   // 404 catch-all
   app.use((req, res) => {

@@ -1,5 +1,5 @@
 export type AspectRatio = '16:9' | '9:16' | '4:3' | '1:1';
-export type SeriesGenre = 'all' | 'sci-fi' | 'horror' | 'cyberpunk' | 'thriller' | 'space' | 'mystery' | 'fantasy';
+export type SeriesGenre = 'all' | 'sci-fi' | 'horror' | 'cyberpunk' | 'thriller' | 'space' | 'mystery' | 'fantasy' | 'reality-show' | 'anime' | 'comedy' | 'drama';
 export type SortOption = 'trending' | 'newest' | 'most_branched' | 'top_rated';
 export interface Series {
     id: string;

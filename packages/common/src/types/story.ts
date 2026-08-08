@@ -8,7 +8,11 @@ export type SeriesGenre =
   | 'thriller'
   | 'space'
   | 'mystery'
-  | 'fantasy';
+  | 'fantasy'
+  | 'reality-show'
+  | 'anime'
+  | 'comedy'
+  | 'drama';
 
 export type SortOption = 'trending' | 'newest' | 'most_branched' | 'top_rated';
 

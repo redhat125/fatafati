@@ -18,7 +18,7 @@ exports.UpdateJourneySchema = zod_1.z.object({
     episodeId: zod_1.z.string().min(1, 'Episode ID is required'),
 });
 exports.SeriesQuerySchema = zod_1.z.object({
-    genre: zod_1.z.enum(['all', 'sci-fi', 'horror', 'cyberpunk', 'thriller', 'space', 'mystery', 'fantasy']).optional().default('all'),
+    genre: zod_1.z.enum(['all', 'sci-fi', 'horror', 'cyberpunk', 'thriller', 'space', 'mystery', 'fantasy', 'reality-show', 'anime', 'comedy', 'drama']).optional().default('all'),
     sort: zod_1.z.enum(['trending', 'newest', 'most_branched', 'top_rated']).optional().default('trending'),
     search: zod_1.z.string().optional(),
 });

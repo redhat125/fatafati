@@ -42,16 +42,16 @@ export declare const UpdateJourneySchema: z.ZodObject<{
 }>;
 export type UpdateJourneyInput = z.infer<typeof UpdateJourneySchema>;
 export declare const SeriesQuerySchema: z.ZodObject<{
-    genre: z.ZodDefault<z.ZodOptional<z.ZodEnum<["all", "sci-fi", "horror", "cyberpunk", "thriller", "space", "mystery", "fantasy"]>>>;
+    genre: z.ZodDefault<z.ZodOptional<z.ZodEnum<["all", "sci-fi", "horror", "cyberpunk", "thriller", "space", "mystery", "fantasy", "reality-show", "anime", "comedy", "drama"]>>>;
     sort: z.ZodDefault<z.ZodOptional<z.ZodEnum<["trending", "newest", "most_branched", "top_rated"]>>>;
     search: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     sort: "trending" | "newest" | "most_branched" | "top_rated";
-    genre: "all" | "sci-fi" | "horror" | "cyberpunk" | "thriller" | "space" | "mystery" | "fantasy";
+    genre: "all" | "sci-fi" | "horror" | "cyberpunk" | "thriller" | "space" | "mystery" | "fantasy" | "reality-show" | "anime" | "comedy" | "drama";
     search?: string | undefined;
 }, {
     sort?: "trending" | "newest" | "most_branched" | "top_rated" | undefined;
-    genre?: "all" | "sci-fi" | "horror" | "cyberpunk" | "thriller" | "space" | "mystery" | "fantasy" | undefined;
+    genre?: "all" | "sci-fi" | "horror" | "cyberpunk" | "thriller" | "space" | "mystery" | "fantasy" | "reality-show" | "anime" | "comedy" | "drama" | undefined;
     search?: string | undefined;
 }>;
 export type SeriesQueryInput = z.infer<typeof SeriesQuerySchema>;

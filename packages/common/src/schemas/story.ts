@@ -25,7 +25,7 @@ export const UpdateJourneySchema = z.object({
 export type UpdateJourneyInput = z.infer<typeof UpdateJourneySchema>;
 
 export const SeriesQuerySchema = z.object({
-  genre: z.enum(['all', 'sci-fi', 'horror', 'cyberpunk', 'thriller', 'space', 'mystery', 'fantasy']).optional().default('all'),
+  genre: z.enum(['all', 'sci-fi', 'horror', 'cyberpunk', 'thriller', 'space', 'mystery', 'fantasy', 'reality-show', 'anime', 'comedy', 'drama']).optional().default('all'),
   sort: z.enum(['trending', 'newest', 'most_branched', 'top_rated']).optional().default('trending'),
   search: z.string().optional(),
 });

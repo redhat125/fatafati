@@ -15,10 +15,14 @@ interface FilterBarProps {
 
 const GENRES: Array<{ id: SeriesGenre; label: string; icon: string }> = [
   { id: 'all', label: 'All Universes', icon: '🌌' },
+  { id: 'sci-fi', label: 'AI & Sci-Fi', icon: '🤖' },
   { id: 'cyberpunk', label: 'Cyberpunk', icon: '⚡' },
   { id: 'horror', label: 'Gothic Horror', icon: '🕯️' },
   { id: 'space', label: 'Deep Space', icon: '🚀' },
   { id: 'thriller', label: 'Action & Speed', icon: '🏎️' },
+  { id: 'reality-show', label: 'Reality AI', icon: '🎙️' },
+  { id: 'anime', label: 'Anime', icon: '⚔️' },
+  { id: 'comedy', label: 'Satire / Comedy', icon: '🎭' },
 ];
 
 export function FilterBar({

@@ -195,9 +195,9 @@ WHERE id = 'ai-boss';
 
 ---
 
-## 🎨 Supported Genres List
+## 🎨 Supported Genres & How to Add New Ones
 
-When adding a series, set `genre` to one of these supported categories:
+### Currently Supported Genres:
 - `cyberpunk` (Cyberpunk Sci-Fi)
 - `horror` (Gothic Horror / Supernatural)
 - `space` (Deep Space Sci-Fi)
@@ -205,6 +205,67 @@ When adding a series, set `genre` to one of these supported categories:
 - `mystery` (Detective / Noir)
 - `fantasy` (High Fantasy)
 - `sci-fi` (General Sci-Fi & AI)
+- `reality-show` (AI Reality & Social Simulation)
+- `anime` (Anime & Stylized Animation)
+- `comedy` (Dark Comedy / Satire)
+
+*(Note: The PostgreSQL `series.genre` database column is `TEXT`, so it automatically supports any new genre without database migrations!)*
+
+---
+
+### 🛠️ 3 Simple Steps to Add a New Genre:
+
+#### Step 1: Add to Common Types ([types/story.ts](file:///packages/common/src/types/story.ts))
+Add your new genre keyword to the `SeriesGenre` type:
+```typescript
+export type SeriesGenre = 
+  | 'all'
+  | 'sci-fi'
+  | 'horror'
+  | 'cyberpunk'
+  | 'thriller'
+  | 'space'
+  | 'mystery'
+  | 'fantasy'
+  | 'reality-show'
+  | 'anime'
+  | 'comedy'
+  | 'your-new-genre'; // <-- Add here
+```
+
+#### Step 2: Add to Query Schema ([schemas/story.ts](file:///packages/common/src/schemas/story.ts))
+Add it to the Zod enum validation for the backend query:
+```typescript
+export const SeriesQuerySchema = z.object({
+  genre: z.enum([
+    'all', 'sci-fi', 'horror', 'cyberpunk', 'thriller', 
+    'space', 'mystery', 'fantasy', 'reality-show', 'anime', 'comedy', 
+    'your-new-genre' // <-- Add here
+  ]).optional().default('all'),
+  sort: z.enum(['trending', 'newest', 'most_branched', 'top_rated']).optional().default('trending'),
+  search: z.string().optional(),
+});
+```
+
+#### Step 3: Add Filter Pill to Frontend ([FilterBar.tsx](file:///fatafati-fe/src/components/discovery/FilterBar.tsx))
+Add the button label and emoji to the navigation bar on the homepage:
+```typescript
+const GENRES: Array<{ id: SeriesGenre; label: string; icon: string }> = [
+  { id: 'all', label: 'All Universes', icon: '🌌' },
+  { id: 'cyberpunk', label: 'Cyberpunk', icon: '⚡' },
+  { id: 'horror', label: 'Gothic Horror', icon: '🕯️' },
+  { id: 'space', label: 'Deep Space', icon: '🚀' },
+  { id: 'thriller', label: 'Action & Speed', icon: '🏎️' },
+  { id: 'reality-show', label: 'Reality AI', icon: '🎙️' },
+  { id: 'your-new-genre', label: 'Your Genre Label', icon: '✨' }, // <-- Add here
+];
+```
+
+#### Step 4: Build & Commit
+```bash
+npm run build:common
+git add . && git commit -m "feat: add new genre" && git push origin main
+```
 
 ---
 

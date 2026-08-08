@@ -123,7 +123,7 @@ export function Header() {
             Discover
           </Link>
           <Link
-            href="/series/cyberpunk-2099"
+            href="/series/ai-boss"
             style={{
               display: 'flex',
               alignItems: 'center',

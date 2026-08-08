@@ -1,0 +1,18 @@
+{
+  "name": "fatafati",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "fatafati-be",
+    "fatafati-fe"
+  ],
+  "scripts": {
+    "build:common": "npm run build --workspace=@fatafati/common",
+    "dev:be": "npm run dev --workspace=@fatafati/backend",
+    "dev:fe": "npm run dev --workspace=@fatafati/frontend",
+    "test:be": "npm test --workspace=@fatafati/backend",
+    "test:fe": "npm test --workspace=@fatafati/frontend",
+    "test": "npm run test:be && npm run test:fe"
+  }
+}

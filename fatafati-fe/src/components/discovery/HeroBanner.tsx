@@ -63,7 +63,7 @@ export function HeroBanner({ series }: HeroBannerProps) {
         {/* Badges Bar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
           <Badge variant="cyan" icon={<Flame size={13} />}>
-            Trending #1 Story
+            Trending #1 • {(series.viewCount || 0).toLocaleString()} Views
           </Badge>
           <Badge variant="purple" icon={<GitFork size={13} />}>
             {series.totalPaths} Divergent Endings

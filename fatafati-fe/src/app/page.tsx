@@ -20,7 +20,8 @@ export default function HomePage() {
     error,
   } = useSeries();
 
-  const featuredSeries = seriesList.find((s) => s.id === 'cyberpunk-2099') || seriesList[0];
+  // True #1 trending series directly from the database sort
+  const featuredSeries = seriesList[0];
 
   return (
     <div className="container">

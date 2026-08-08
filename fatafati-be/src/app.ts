@@ -29,6 +29,19 @@ export function createApp(): express.Application {
   const publicDir = path.resolve(__dirname, '../public');
   app.use('/static', express.static(publicDir));
 
+  // Root & Health for Vercel
+  app.get('/', (req, res) => {
+    res.json({
+      name: 'FataFati API',
+      status: 'online',
+      version: '0.1.0',
+      endpoints: {
+        series: '/api/series',
+        health: '/api/health',
+      },
+    });
+  });
+
   // Mount API router
   app.use('/api', apiRouter);
 

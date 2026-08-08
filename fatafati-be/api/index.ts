@@ -1,11 +1,27 @@
 import { createApp } from '../src/app';
 
-const app = createApp();
+let appInstance: any = null;
 
-export default function handler(req: any, res: any) {
-  return app(req, res);
+function getApp() {
+  if (!appInstance) {
+    appInstance = createApp();
+  }
+  return appInstance;
 }
 
-// Ensure compatibility with both Vercel Serverless CommonJS & ESM loaders
+export default function handler(req: any, res: any) {
+  try {
+    const app = getApp();
+    return app(req, res);
+  } catch (err: any) {
+    console.error('Serverless Execution Error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Serverless Handler Error',
+      message: err?.message || 'Unknown serverless runtime error',
+    });
+  }
+}
+
 module.exports = handler;
 module.exports.default = handler;

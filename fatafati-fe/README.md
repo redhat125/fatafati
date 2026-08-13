@@ -24,6 +24,9 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the application running.
 
+Open [https://fatafati-pink.vercel.app/](https://fatafati-pink.vercel.app/) with your browser to see the application running from anywhere.
+
+
 ## Available Scripts
 
 - `npm run dev`: Starts the development server on port 3000.

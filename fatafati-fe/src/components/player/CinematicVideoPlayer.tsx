@@ -73,6 +73,11 @@ export function CinematicVideoPlayer({
         setIsEnded(false);
       }
       videoRef.current.play().catch(console.error);
+      
+      // Auto-fullscreen when starting playback (Mobile First)
+      if (containerRef.current && !document.fullscreenElement) {
+        containerRef.current.requestFullscreen().catch(console.error);
+      }
     }
     wakeControls();
   };

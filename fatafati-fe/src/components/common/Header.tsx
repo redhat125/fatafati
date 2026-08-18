@@ -79,22 +79,6 @@ export function Header() {
             >
               FataFati
             </span>
-            <span
-              style={{
-                fontSize: '0.65rem',
-                fontWeight: 700,
-                color: '#a855f7',
-                marginLeft: '6px',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                background: 'rgba(168, 85, 247, 0.15)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Interactive AI
-            </span>
           </div>
         </Link>
 
@@ -148,7 +132,7 @@ export function Header() {
                 autoFocus
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
-                placeholder="Your Creator Name"
+                placeholder="Name"
                 style={{
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '1px solid var(--accent-cyan)',
@@ -157,6 +141,7 @@ export function Header() {
                   color: '#fff',
                   fontSize: '0.82rem',
                   outline: 'none',
+                  width: '100px',
                 }}
               />
               <button
@@ -179,43 +164,39 @@ export function Header() {
                 setTempName(authorName);
                 setIsEditingName(true);
               }}
-              title="Click to change your alias"
+              title={authorName === 'Anonymous Creator' ? 'Click to set alias' : `Change alias (${authorName})`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                padding: '6px 12px',
-                borderRadius: '9999px',
-                background: 'rgba(255, 255, 255, 0.05)',
+                justifyContent: 'center',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.15))',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: 'var(--text-secondary)',
-                fontSize: '0.82rem',
-                fontWeight: 500,
+                color: '#fff',
+                fontSize: '0.8rem',
+                fontWeight: 700,
                 transition: 'all 0.2s ease',
+                cursor: 'pointer',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(0, 240, 255, 0.4)';
-                e.currentTarget.style.background = 'rgba(0, 240, 255, 0.05)';
+                e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 240, 255, 0.2)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #00f0ff, #a855f7)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <User size={12} color="#000" />
-              </div>
-              <span>{authorName}</span>
+              {authorName && authorName !== 'Anonymous Creator'
+                ? authorName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .substring(0, 2)
+                    .toUpperCase()
+                : <User size={18} />}
             </button>
           )}
         </div>

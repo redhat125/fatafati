@@ -71,8 +71,6 @@
 }
 
 html {
-  overflow-x: hidden;
-  overflow-y: auto;
   scroll-behavior: smooth;
   background-color: var(--bg-space);
 }
@@ -90,6 +88,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow-x: hidden; /* Prevent horizontal scroll here instead of html to keep native scroll */
 }
 
 /* Ambient Deep Space Aurora Background */

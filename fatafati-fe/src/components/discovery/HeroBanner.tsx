@@ -2,9 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Play, GitFork, Sparkles, Flame, ShieldAlert, Compass } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { Series } from '@fatafati/common';
-import { Badge } from '../common/Badge';
 
 interface HeroBannerProps {
   series: Series;
@@ -17,147 +16,135 @@ export function HeroBanner({ series }: HeroBannerProps) {
     <section
       style={{
         position: 'relative',
-        borderRadius: 'var(--radius-lg)',
-        overflow: 'hidden',
-        minHeight: '480px',
+        width: '100%',
         display: 'flex',
-        alignItems: 'flex-end',
-        margin: '24px 0 40px 0',
-        border: '1px solid rgba(0, 240, 255, 0.25)',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.1)',
+        flexDirection: 'column',
+        alignItems: 'center',
+        margin: '0 0 24px 0',
       }}
     >
-      {/* Backdrop Image with Multi-layer Gradient Mask */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${series.backdropImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'brightness(0.7) contrast(1.1)',
-          transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-          zIndex: 0,
-        }}
-      />
-
-      {/* Dark Vignette and Gradient Overlay */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(7, 7, 10, 0.2) 0%, rgba(7, 7, 10, 0.7) 50%, rgba(7, 7, 10, 0.98) 100%), linear-gradient(90deg, rgba(7, 7, 10, 0.95) 0%, rgba(7, 7, 10, 0.4) 60%, transparent 100%)',
-          zIndex: 1,
-        }}
-      />
-
-      {/* Hero Content */}
+      {/* Poster Container */}
       <div
         style={{
           position: 'relative',
-          zIndex: 2,
-          padding: '48px 40px',
-          maxWidth: '750px',
+          width: '100%',
+          maxWidth: '500px',
+          aspectRatio: '3 / 4',
+          borderRadius: 'var(--radius-lg)',
+          overflow: 'hidden',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.05)',
         }}
       >
-        {/* Badges Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
-          <Badge variant="cyan" icon={<Flame size={13} />}>
-            Trending #1 • {(series.viewCount || 0).toLocaleString()} Views
-          </Badge>
-          <Badge variant="purple" icon={<GitFork size={13} />}>
-            {series.totalPaths} Divergent Endings
-          </Badge>
-          <Badge variant="default">
-            ⭐ {series.rating} / 5.0
-          </Badge>
-        </div>
-
-        {/* Title */}
-        <h1
+        {/* Backdrop Image */}
+        <div
           style={{
-            fontSize: 'clamp(2rem, 4vw, 3.2rem)',
-            lineHeight: 1.1,
-            marginBottom: '14px',
-            textShadow: '0 4px 20px rgba(0,0,0,0.8)',
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${series.coverImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'top',
+            filter: 'brightness(0.9) contrast(1.1)',
+            zIndex: 0,
+          }}
+        />
+
+        {/* Gradient Overlay for Text Readability at Bottom */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(15,16,22,0) 0%, rgba(15,16,22,0.2) 50%, rgba(21,22,31,0.98) 100%)',
+            zIndex: 1,
+          }}
+        />
+
+        {/* Hero Content (Centered at Bottom) */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 2,
+            padding: '32px 20px 24px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
           }}
         >
-          {series.title}
-        </h1>
-
-        {/* Tagline / Synopsis */}
-        <p
-          style={{
-            fontSize: '1.05rem',
-            lineHeight: 1.6,
-            color: 'var(--text-secondary)',
-            marginBottom: '28px',
-            maxWidth: '620px',
-          }}
-        >
-          {series.tagline || series.description}
-        </p>
-
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <Link
-            href={`/watch/${series.rootEpisodeId}`}
+          {/* Top Badge */}
+          <div
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '14px 28px',
-              borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(135deg, #00f0ff 0%, #a855f7 100%)',
-              color: '#07070a',
+              fontSize: '0.65rem',
               fontWeight: 800,
-              fontSize: '1rem',
-              letterSpacing: '0.02em',
-              boxShadow: '0 0 25px rgba(0, 240, 255, 0.4), 0 4px 12px rgba(0,0,0,0.5)',
-              transition: 'all 0.25s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 0 35px rgba(0, 240, 255, 0.7)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 240, 255, 0.4)';
+              color: 'var(--accent-magenta)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+              textShadow: '0 2px 4px rgba(0,0,0,0.8)',
             }}
           >
-            <Play size={20} fill="#07070a" />
-            <span>Start Story Journey</span>
-          </Link>
+            A FATAFATI ORIGINAL
+          </div>
 
-          <Link
-            href={`/series/${series.id}`}
+          {/* Title */}
+          <h1
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '14px 24px',
-              borderRadius: 'var(--radius-md)',
-              background: 'rgba(255, 255, 255, 0.08)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              fontSize: 'clamp(2rem, 8vw, 3rem)',
+              lineHeight: 1,
+              fontWeight: 800,
               color: '#fff',
-              fontWeight: 600,
-              fontSize: '0.95rem',
-              transition: 'all 0.25s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-              e.currentTarget.style.borderColor = 'rgba(0, 240, 255, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+              marginBottom: '16px',
+              textShadow: '0 4px 16px rgba(0,0,0,0.8)',
+              textTransform: 'uppercase',
+              letterSpacing: '-0.02em',
             }}
           >
-            <GitFork size={18} color="#a855f7" />
-            <span>Explore All Branches</span>
+            {series.title}
+          </h1>
+
+          {/* Watch Now Button */}
+          <Link href={`/watch/${series.rootEpisodeId}`} style={{ textDecoration: 'none', width: '100%', maxWidth: '240px' }}>
+            <button
+              style={{
+                width: '100%',
+                padding: '12px 24px',
+                borderRadius: 'var(--radius-full)',
+                background: 'var(--accent-magenta)',
+                color: '#fff',
+                fontSize: '1rem',
+                fontWeight: 700,
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 16px rgba(236, 72, 153, 0.4)',
+                cursor: 'pointer',
+              }}
+            >
+              Watch Now <Play size={18} fill="#fff" />
+            </button>
           </Link>
         </div>
+      </div>
+
+      {/* Carousel Dots */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '8px',
+          marginTop: '16px',
+        }}
+      >
+        <span style={{ width: '16px', height: '6px', borderRadius: '4px', background: '#fff' }} />
+        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
+        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
+        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
+        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
       </div>
     </section>
   );

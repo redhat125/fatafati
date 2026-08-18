@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root {
-  /* Core Neo-Cinematic Palette */
-  --bg-space: #07070a;
-  --bg-primary: #0b0c12;
-  --bg-secondary: #11131c;
-  --bg-tertiary: #181b28;
-  --bg-glass: rgba(17, 19, 28, 0.75);
-  --bg-glass-heavy: rgba(11, 12, 18, 0.9);
-  --bg-card: rgba(24, 27, 40, 0.6);
-  --bg-card-hover: rgba(32, 36, 54, 0.8);
+  /* Core Neo-Cinematic Palette (Lightened per user feedback) */
+  --bg-space: #0f1016;
+  --bg-primary: #15161f;
+  --bg-secondary: #1d1e2b;
+  --bg-tertiary: #27293a;
+  --bg-glass: rgba(29, 30, 43, 0.75);
+  --bg-glass-heavy: rgba(21, 22, 31, 0.9);
+  --bg-card: rgba(39, 41, 58, 0.6);
+  --bg-card-hover: rgba(48, 51, 71, 0.8);
 
   /* Neon Accent Gradients */
   --accent-cyan: #00f0ff;

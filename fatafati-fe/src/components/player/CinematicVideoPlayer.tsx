@@ -1,192 +1,97 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, Sparkles } from 'lucide-react';
-import { AspectRatio } from '@fatafati/common';
+import React, { useRef, useState, useEffect } from 'react';
+import { Play, Pause, Heart, MessageCircle, GitFork, MoreHorizontal, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface CinematicVideoPlayerProps {
   videoUrl: string;
   posterUrl?: string;
-  aspectRatio?: AspectRatio;
   title: string;
+  seriesTitle: string;
+  viewCount?: number;
   onVideoEnd?: () => void;
   autoPlay?: boolean;
+  onOpenMap?: () => void;
+  onOpenComments?: () => void;
+  onOpenDetails?: () => void;
 }
 
 export function CinematicVideoPlayer({
   videoUrl,
   posterUrl,
-  aspectRatio = '16:9',
   title,
+  seriesTitle,
+  viewCount = 0,
   onVideoEnd,
-  autoPlay = false,
+  autoPlay = true,
+  onOpenMap,
+  onOpenComments,
+  onOpenDetails,
 }: CinematicVideoPlayerProps) {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
+  const [isLiked, setIsLiked] = useState(false);
+  const [showUI, setShowUI] = useState(true);
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
-  const [showControls, setShowControls] = useState<boolean>(true);
-  const [isEnded, setIsEnded] = useState<boolean>(false);
-  const [seekFeedback, setSeekFeedback] = useState<{ side: 'left' | 'right'; text: string } | null>(null);
-
-  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastTapTimeRef = useRef<number>(0);
-  const lastTapXRef = useRef<number>(0);
+  // Format views
+  const formatCount = (count: number) => {
+    if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+    if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
+    return count.toString();
+  };
 
   useEffect(() => {
-    setIsEnded(false);
     if (videoRef.current) {
-      videoRef.current.currentTime = 0;
       if (autoPlay) {
         videoRef.current.play().catch(() => {
-          // Autoplay policy fallback: mute and play
+          // Autoplay policy fallback
           if (videoRef.current) {
             videoRef.current.muted = true;
-            setIsMuted(true);
             videoRef.current.play().catch(console.error);
           }
         });
+        setIsPlaying(true);
       }
     }
   }, [videoUrl, autoPlay]);
 
-  const wakeControls = useCallback(() => {
-    setShowControls(true);
-    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-    controlsTimeoutRef.current = setTimeout(() => {
-      if (videoRef.current && !videoRef.current.paused && !videoRef.current.ended) {
-        setShowControls(false);
-      }
-    }, 3500);
-  }, []);
-
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-    } else {
-      if (isEnded) {
-        videoRef.current.currentTime = 0;
-        setIsEnded(false);
-      }
-      videoRef.current.play().catch(console.error);
-      
-      // Auto-fullscreen when starting playback (Mobile First)
-      if (containerRef.current && !document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(console.error);
-      }
-    }
-    wakeControls();
-  };
-
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
-    wakeControls();
-  };
-
-  const handleTimeUpdate = () => {
-    if (!videoRef.current) return;
-    setCurrentTime(videoRef.current.currentTime);
-  };
-
-  const handleLoadedMetadata = () => {
-    if (!videoRef.current) return;
-    setDuration(videoRef.current.duration);
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(e.target.value);
+  const handleVideoClick = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
-      if (isEnded) setIsEnded(false);
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+        setShowUI(true); // Always show UI when paused
+      } else {
+        videoRef.current.play();
+        setIsPlaying(true);
+        // Toggle UI off for clean viewing if desired, but Reels usually keeps UI. 
+        // We'll toggle UI based on clicking if it's already playing.
+      }
     }
-    wakeControls();
   };
 
   const handleEnded = () => {
     setIsPlaying(false);
-    setIsEnded(true);
-    setShowControls(true);
-    if (onVideoEnd) {
-      onVideoEnd();
-    }
+    setShowUI(true);
+    if (onVideoEnd) onVideoEnd();
   };
 
-  const toggleFullscreen = () => {
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(console.error);
-    } else {
-      document.exitFullscreen().catch(console.error);
-    }
-    wakeControls();
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsLiked(!isLiked);
   };
-
-  // Mobile Touch Gestures: Double-tap left/right to skip ±5s, single-tap to toggle
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    const now = Date.now();
-    const touch = e.changedTouches[0];
-    if (!touch || !containerRef.current) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const touchX = touch.clientX - rect.left;
-    const isLeftSide = touchX < rect.width / 2;
-
-    const timeDiff = now - lastTapTimeRef.current;
-    const distDiff = Math.abs(touchX - lastTapXRef.current);
-
-    if (timeDiff < 300 && distDiff < 60) {
-      // Double tap detected!
-      if (videoRef.current) {
-        if (isLeftSide) {
-          videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 5);
-          setSeekFeedback({ side: 'left', text: '⏪ 5s' });
-        } else {
-          videoRef.current.currentTime = Math.min(duration || 60, videoRef.current.currentTime + 5);
-          setSeekFeedback({ side: 'right', text: '5s ⏩' });
-        }
-        setTimeout(() => setSeekFeedback(null), 800);
-      }
-      lastTapTimeRef.current = 0;
-    } else {
-      // Single tap
-      lastTapTimeRef.current = now;
-      lastTapXRef.current = touchX;
-      wakeControls();
-    }
-  };
-
-  const formatTime = (secs: number) => {
-    if (isNaN(secs)) return '0:00';
-    const m = Math.floor(secs / 60);
-    const s = Math.floor(secs % 60);
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
-  };
-
-  const isVertical = aspectRatio === '9:16';
 
   return (
     <div
-      ref={containerRef}
-      onMouseMove={wakeControls}
-      onTouchEnd={handleTouchEnd}
       style={{
         position: 'relative',
         width: '100%',
-        maxWidth: isVertical ? '440px' : '100%',
-        margin: '0 auto',
-        borderRadius: 'var(--radius-lg)',
+        height: '100dvh',
+        backgroundColor: '#000',
         overflow: 'hidden',
-        background: '#000',
-        border: '1px solid rgba(255, 255, 255, 0.12)',
-        boxShadow: '0 24px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 240, 255, 0.1)',
-        aspectRatio: isVertical ? '9 / 16' : '16 / 9',
       }}
     >
       {/* Video Element */}
@@ -194,218 +99,204 @@ export function CinematicVideoPlayer({
         ref={videoRef}
         src={videoUrl}
         poster={posterUrl}
+        autoPlay={autoPlay}
         playsInline
-        webkit-playsinline="true"
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
+        loop={false} // Stops at end for branching choice
+        onClick={handleVideoClick}
         onEnded={handleEnded}
-        onClick={togglePlay}
         style={{
           width: '100%',
           height: '100%',
-          objectFit: isVertical ? 'cover' : 'contain',
-          backgroundColor: '#000',
+          objectFit: 'cover',
           cursor: 'pointer',
-          filter: isEnded ? 'grayscale(35%) brightness(0.7)' : 'none',
-          transition: 'filter 0.5s ease',
         }}
       />
 
-      {/* Double Tap Seek Feedback Ripple Indicator */}
-      {seekFeedback && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: seekFeedback.side === 'left' ? '25%' : '75%',
-            transform: 'translate(-50%, -50%)',
-            background: 'rgba(0, 240, 255, 0.25)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: '1px solid rgba(0, 240, 255, 0.6)',
-            borderRadius: 'var(--radius-full)',
-            padding: '12px 24px',
-            color: '#fff',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            letterSpacing: '0.05em',
-            boxShadow: '0 0 25px rgba(0, 240, 255, 0.6)',
-            pointerEvents: 'none',
-            zIndex: 30,
-            animation: 'cardMaterialize 0.2s ease-out',
-          }}
-        >
-          {seekFeedback.text}
-        </div>
-      )}
-
-      {/* Top Title Bar */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          padding: '14px 16px',
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          zIndex: 10,
-          opacity: showControls || !isPlaying ? 1 : 0,
-          transition: 'opacity 0.3s ease',
-          pointerEvents: showControls ? 'auto' : 'none',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#00f0ff',
-              boxShadow: '0 0 8px #00f0ff',
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              fontSize: '0.84rem',
-              fontWeight: 600,
-              color: '#fff',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {title}
-          </span>
-        </div>
-      </div>
-
-      {/* Big Play/Pause/Replay Trigger in Center */}
-      {(!isPlaying || isEnded) && (
-        <button
-          onClick={togglePlay}
-          aria-label={isEnded ? 'Rewatch Episode' : isPlaying ? 'Pause' : 'Play Episode'}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '68px',
-            height: '68px',
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.92), rgba(168, 85, 247, 0.92))',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 35px rgba(0, 240, 255, 0.6)',
-            zIndex: 15,
-            transition: 'transform 0.2s ease',
-          }}
-        >
-          {isEnded ? (
-            <RotateCcw size={30} color="#07070a" strokeWidth={2.5} />
-          ) : (
-            <Play size={30} fill="#07070a" color="#07070a" style={{ marginLeft: '4px' }} />
-          )}
-        </button>
-      )}
-
-      {/* Bottom Custom Control Bar with Touch Friendly Tap Targets */}
+      {/* Dark gradient at bottom for text readability */}
       <div
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          padding: '12px 16px',
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-          zIndex: 10,
-          opacity: showControls || !isPlaying ? 1 : 0,
+          height: '40%',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)',
+          pointerEvents: 'none',
+          opacity: showUI ? 1 : 0,
           transition: 'opacity 0.3s ease',
-          pointerEvents: showControls ? 'auto' : 'none',
         }}
-      >
-        {/* Progress Bar / Scrubber */}
-        <input
-          type="range"
-          min="0"
-          max={duration || 100}
-          step="0.1"
-          value={currentTime}
-          onChange={handleSeek}
-          aria-label="Video scrubber"
-          style={{
-            width: '100%',
-            height: '6px',
-            accentColor: '#00f0ff',
-            cursor: 'pointer',
-          }}
-        />
+      />
+      
+      {/* Dark gradient at top for header readability */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '15%',
+          background: 'linear-gradient(0deg, transparent 0%, rgba(0,0,0,0.6) 100%)',
+          pointerEvents: 'none',
+          opacity: showUI ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}
+      />
 
-        {/* Controls Row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      {showUI && (
+        <>
+          {/* Top Header (Back button) */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 'env(safe-area-inset-top, 16px)',
+              left: '16px',
+              zIndex: 10,
+            }}
+          >
             <button
-              onClick={togglePlay}
-              aria-label={isPlaying ? 'Pause' : 'Play'}
+              onClick={() => router.back()}
               style={{
-                color: '#fff',
+                background: 'rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minWidth: '44px',
-                minHeight: '44px',
-              }}
-            >
-              {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-            </button>
-
-            <button
-              onClick={toggleMute}
-              aria-label={isMuted ? 'Unmute' : 'Mute'}
-              style={{
                 color: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: '44px',
-                minHeight: '44px',
+                cursor: 'pointer',
               }}
             >
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <button
-              onClick={toggleFullscreen}
-              aria-label="Toggle Fullscreen"
-              style={{
-                color: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: '44px',
-                minHeight: '44px',
-              }}
-            >
-              <Maximize size={18} />
+              <ArrowLeft size={20} />
             </button>
           </div>
-        </div>
-      </div>
+
+          {/* Center Play Button Overlay (when paused) */}
+          {!isPlaying && (
+            <div
+              onClick={handleVideoClick}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                cursor: 'pointer',
+                zIndex: 5,
+              }}
+            >
+              <div
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '50%',
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  backdropFilter: 'blur(8px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                }}
+              >
+                <Play size={32} fill="#fff" style={{ marginLeft: '4px' }} />
+              </div>
+            </div>
+          )}
+
+          {/* Right Action Bar */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '90px', // Above bottom edge
+              right: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+              alignItems: 'center',
+              zIndex: 10,
+            }}
+          >
+            {/* Like */}
+            <button onClick={handleLike} style={actionButtonStyle}>
+              <Heart size={28} color={isLiked ? '#ec4899' : '#fff'} fill={isLiked ? '#ec4899' : 'none'} />
+              <span style={actionLabelStyle}>{formatCount(viewCount > 0 ? viewCount / 2 : 124)}</span>
+            </button>
+
+            {/* Comment / Pitch */}
+            <button
+              onClick={(e) => { e.stopPropagation(); if(onOpenComments) onOpenComments(); }}
+              style={actionButtonStyle}
+            >
+              <MessageCircle size={28} color="#fff" />
+              <span style={actionLabelStyle}>{formatCount(42)}</span>
+            </button>
+
+            {/* Story Map */}
+            <button
+              onClick={(e) => { e.stopPropagation(); if(onOpenMap) onOpenMap(); }}
+              style={actionButtonStyle}
+            >
+              <GitFork size={28} color="#00f0ff" />
+              <span style={actionLabelStyle}>Map</span>
+            </button>
+
+            {/* Details (Sandwich) */}
+            <button
+              onClick={(e) => { e.stopPropagation(); if(onOpenDetails) onOpenDetails(); }}
+              style={actionButtonStyle}
+            >
+              <MoreHorizontal size={28} color="#fff" />
+              <span style={actionLabelStyle}>Info</span>
+            </button>
+          </div>
+
+          {/* Bottom Left Details */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '32px',
+              left: '16px',
+              right: '80px', // leave room for action bar
+              zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff', background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '4px', backdropFilter: 'blur(4px)' }}>
+                {seriesTitle}
+              </span>
+            </div>
+            
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+              {title}
+            </h2>
+          </div>
+        </>
+      )}
     </div>
   );
 }
+
+const actionButtonStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '4px',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: 0,
+  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
+};
+
+const actionLabelStyle: React.CSSProperties = {
+  fontSize: '0.75rem',
+  fontWeight: 600,
+  color: '#fff',
+  textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+};

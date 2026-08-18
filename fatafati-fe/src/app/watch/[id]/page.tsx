@@ -9,7 +9,8 @@ import { CinematicVideoPlayer } from '../../../components/player/CinematicVideoP
 import { ChoiceCardsOverlay } from '../../../components/choices/ChoiceCardsOverlay';
 import { StoryJourneyTree } from '../../../components/journey/StoryJourneyTree';
 import { CommunityVoice } from '../../../components/community/CommunityVoice';
-import { Sparkles, GitFork, ArrowLeft } from 'lucide-react';
+import { BottomSheetOverlay } from '../../../components/common/BottomSheetOverlay';
+import { Sparkles, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import confetti from 'canvas-confetti';
 
@@ -23,13 +24,17 @@ export default function WatchEpisodePage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<{ id: string; title: string; episodeNumber: number; choicePrompt?: string | null }>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // States for Overlays
   const [showChoices, setShowChoices] = useState<boolean>(false);
+  const [activeSheet, setActiveSheet] = useState<'map' | 'comments' | 'details' | null>(null);
 
   const loadEpisodeData = useCallback(async () => {
     if (!episodeId) return;
     setIsLoading(true);
     setError(null);
     setShowChoices(false);
+    setActiveSheet(null);
 
     try {
       const data = await api.getEpisode(episodeId);
@@ -59,6 +64,7 @@ export default function WatchEpisodePage() {
         spread: 70,
         origin: { y: 0.6 },
         colors: ['#00f0ff', '#a855f7', '#ec4899', '#f59e0b'],
+        zIndex: 200, // Show over video
       });
     } catch (e) {
       // Ignore if canvas is unavailable
@@ -77,8 +83,8 @@ export default function WatchEpisodePage() {
 
   if (isLoading) {
     return (
-      <div className="container" style={{ padding: '80px 0', textAlign: 'center', color: 'var(--text-secondary)' }}>
-        <Sparkles size={36} color="#00f0ff" style={{ margin: '0 auto 12px auto' }} />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100dvh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
+        <Sparkles size={36} color="#00f0ff" style={{ marginBottom: '16px' }} />
         <p>Entering interactive cinema universe...</p>
       </div>
     );
@@ -86,7 +92,7 @@ export default function WatchEpisodePage() {
 
   if (error || !episode || !series) {
     return (
-      <div className="container" style={{ padding: '80px 0', textAlign: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100dvh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
         <h2 style={{ color: '#ef4444', marginBottom: '12px' }}>Episode Not Found</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>{error || 'Unable to retrieve episode.'}</p>
         <Link
@@ -99,6 +105,7 @@ export default function WatchEpisodePage() {
             borderRadius: 'var(--radius-md)',
             background: 'rgba(255, 255, 255, 0.1)',
             color: '#fff',
+            textDecoration: 'none',
           }}
         >
           <ArrowLeft size={16} />
@@ -109,94 +116,22 @@ export default function WatchEpisodePage() {
   }
 
   return (
-    <div className="container" style={{ paddingTop: '16px' }}>
-      {/* Breadcrumb Navigation Trail */}
-      <BranchTimeline
-        seriesTitle={series.title}
-        seriesId={series.id}
-        breadcrumbs={breadcrumbs}
-        currentEpisodeId={episode.id}
-      />
-
-      {/* Episode Header */}
-      <div style={{ marginBottom: '18px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              color: 'var(--accent-cyan)',
-            }}
-          >
-            Episode {episode.episodeNumber} • {series.title}
-          </span>
-          {episode.isLeaf && (
-            <span
-              style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                padding: '2px 8px',
-                borderRadius: '4px',
-                background: 'rgba(236, 72, 153, 0.2)',
-                border: '1px solid rgba(236, 72, 153, 0.4)',
-                color: '#ec4899',
-              }}
-            >
-              Final Ending Branch
-            </span>
-          )}
-        </div>
-
-        <h1 style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)', lineHeight: 1.2 }}>
-          {episode.title}
-        </h1>
-
-        {episode.synopsis && (
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginTop: '8px', maxWidth: '800px', lineHeight: 1.5 }}>
-            {episode.synopsis}
-          </p>
-        )}
-      </div>
-
-      {/* Cinematic Custom Video Player */}
+    <>
+      {/* Full Screen Cinematic Player */}
       <CinematicVideoPlayer
         videoUrl={episode.videoUrl}
         posterUrl={episode.thumbnailUrl || series.backdropImage}
-        aspectRatio={episode.aspectRatio}
-        title={`${series.title} — Ep ${episode.episodeNumber}: ${episode.title}`}
+        title={episode.title}
+        seriesTitle={series.title}
+        viewCount={1240} // Mock data for view count
         onVideoEnd={handleVideoEnd}
         autoPlay={true}
+        onOpenMap={() => setActiveSheet('map')}
+        onOpenComments={() => setActiveSheet('comments')}
+        onOpenDetails={() => setActiveSheet('details')}
       />
 
-      {/* Choice Prompt Trigger Button (if choices are hidden and user wants to choose early) */}
-      {!showChoices && episode.choices && episode.choices.length > 0 && (
-        <div style={{ textAlign: 'center', marginTop: '16px' }}>
-          <button
-            onClick={() => setShowChoices(true)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '10px 20px',
-              borderRadius: 'var(--radius-full)',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
-              color: '#00f0ff',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-          >
-            <GitFork size={16} />
-            <span>Reveal Branch Choices Now</span>
-          </button>
-        </div>
-      )}
-
-      {/* Choice Cards Overlay (Shown on video end or manual reveal) */}
+      {/* Choice Cards Overlay (Shown on video end) */}
       {showChoices && (
         <ChoiceCardsOverlay
           episode={episode}
@@ -206,11 +141,80 @@ export default function WatchEpisodePage() {
         />
       )}
 
-      {/* Interactive Story DAG Tree Map */}
-      <StoryJourneyTree seriesId={series.id} currentEpisodeId={episode.id} />
+      {/* Bottom Sheet Overlays */}
+      <BottomSheetOverlay
+        isOpen={activeSheet === 'map'}
+        onClose={() => setActiveSheet(null)}
+        title="Interactive Story Map"
+        height="85dvh"
+      >
+        <StoryJourneyTree seriesId={series.id} currentEpisodeId={episode.id} />
+      </BottomSheetOverlay>
 
-      {/* Community Writers Room for submitting twists & upvoting */}
-      <CommunityVoice episodeId={episode.id} />
-    </div>
+      <BottomSheetOverlay
+        isOpen={activeSheet === 'comments'}
+        onClose={() => setActiveSheet(null)}
+        title="Community Writers Room"
+        height="75dvh"
+      >
+        <CommunityVoice episodeId={episode.id} />
+      </BottomSheetOverlay>
+
+      <BottomSheetOverlay
+        isOpen={activeSheet === 'details'}
+        onClose={() => setActiveSheet(null)}
+        title="Episode Details"
+        height="60dvh"
+      >
+        <div style={{ paddingBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <span
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--accent-cyan)',
+              }}
+            >
+              Episode {episode.episodeNumber} • {series.title}
+            </span>
+            {episode.isLeaf && (
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  background: 'rgba(236, 72, 153, 0.2)',
+                  border: '1px solid rgba(236, 72, 153, 0.4)',
+                  color: '#ec4899',
+                }}
+              >
+                Final Ending Branch
+              </span>
+            )}
+          </div>
+          
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px' }}>{episode.title}</h2>
+          
+          {episode.synopsis && (
+            <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '24px' }}>
+              {episode.synopsis}
+            </p>
+          )}
+
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', marginBottom: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+            Branch Timeline
+          </h3>
+          <BranchTimeline
+            seriesTitle={series.title}
+            seriesId={series.id}
+            breadcrumbs={breadcrumbs}
+            currentEpisodeId={episode.id}
+          />
+        </div>
+      </BottomSheetOverlay>
+    </>
   );
 }

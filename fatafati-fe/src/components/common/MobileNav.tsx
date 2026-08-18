@@ -3,12 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Play, GitFork, MessageSquare } from 'lucide-react';
+import { Compass, Play } from 'lucide-react';
 
 export function MobileNav() {
   const pathname = usePathname();
-  const isWatch = pathname.startsWith('/watch/');
-  const isSeries = pathname.startsWith('/series/');
   const isHome = pathname === '/';
 
   return (
@@ -52,6 +50,7 @@ export function MobileNav() {
             minWidth: '56px',
             padding: '4px 0',
             transition: 'all 0.2s ease',
+            textDecoration: 'none',
           }}
         >
           <Compass size={22} color={isHome ? '#00f0ff' : 'currentColor'} />
@@ -60,18 +59,19 @@ export function MobileNav() {
           </span>
         </Link>
 
-        {/* Watch / Active Theater */}
+        {/* Surprise (Random Series) */}
         <Link
-          href={isWatch ? pathname : '/watch/cp-ep-1'}
+          href="/watch/random"
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             gap: '4px',
-            color: isWatch ? '#00f0ff' : 'var(--text-muted)',
+            color: pathname === '/watch/random' ? '#a855f7' : 'var(--text-muted)',
             minWidth: '56px',
             padding: '4px 0',
             transition: 'all 0.2s ease',
+            textDecoration: 'none',
           }}
         >
           <div
@@ -80,80 +80,60 @@ export function MobileNav() {
               width: '28px',
               height: '28px',
               borderRadius: '50%',
-              background: isWatch
+              background: pathname === '/watch/random'
                 ? 'linear-gradient(135deg, #00f0ff, #a855f7)'
                 : 'rgba(255, 255, 255, 0.08)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: isWatch ? '0 0 14px rgba(0, 240, 255, 0.5)' : 'none',
+              boxShadow: pathname === '/watch/random' ? '0 0 14px rgba(168, 85, 247, 0.5)' : 'none',
             }}
           >
             <Play
               size={14}
-              fill={isWatch ? '#07070a' : 'currentColor'}
-              color={isWatch ? '#07070a' : 'currentColor'}
+              fill={pathname === '/watch/random' ? '#07070a' : 'currentColor'}
+              color={pathname === '/watch/random' ? '#07070a' : 'currentColor'}
               style={{ marginLeft: '2px' }}
             />
           </div>
-          <span style={{ fontSize: '0.72rem', fontWeight: isWatch ? 700 : 500 }}>
-            Theater
+          <span style={{ fontSize: '0.72rem', fontWeight: pathname === '/watch/random' ? 700 : 500 }}>
+            Surprise
           </span>
         </Link>
 
-        {/* Story Tree Map */}
-        <button
-          onClick={() => {
-            const treeEl = document.getElementById('story-journey-map');
-            if (treeEl) {
-              treeEl.scrollIntoView({ behavior: 'smooth' });
-            } else if (!isWatch) {
-              window.location.href = '/watch/cp-ep-1#story-journey-map';
-            }
-          }}
+        {/* Profile */}
+        <Link
+          href="/profile"
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             gap: '4px',
-            color: 'var(--text-muted)',
+            color: pathname === '/profile' ? '#ec4899' : 'var(--text-muted)',
             minWidth: '56px',
             padding: '4px 0',
             transition: 'all 0.2s ease',
+            textDecoration: 'none',
           }}
         >
-          <GitFork size={22} color="currentColor" />
-          <span style={{ fontSize: '0.72rem', fontWeight: 500 }}>
-            Story Map
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={pathname === '/profile' ? '#ec4899' : 'currentColor'}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span style={{ fontSize: '0.72rem', fontWeight: pathname === '/profile' ? 700 : 500 }}>
+            Profile
           </span>
-        </button>
-
-        {/* Writers Room */}
-        <button
-          onClick={() => {
-            const writersEl = document.getElementById('writers-room-section');
-            if (writersEl) {
-              writersEl.scrollIntoView({ behavior: 'smooth' });
-            } else if (!isWatch) {
-              window.location.href = '/watch/cp-ep-1#writers-room-section';
-            }
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
-            color: 'var(--text-muted)',
-            minWidth: '56px',
-            padding: '4px 0',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <MessageSquare size={22} color="currentColor" />
-          <span style={{ fontSize: '0.72rem', fontWeight: 500 }}>
-            Pitches
-          </span>
-        </button>
+        </Link>
       </div>
     </nav>
   );

@@ -27,6 +27,8 @@ export const viewport: Viewport = {
   themeColor: '#07070a',
 };
 
+import { LayoutWrapper } from '../components/common/LayoutWrapper';
+
 export default function RootLayout({
   children,
 }: {
@@ -35,17 +37,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <Header />
-        <main
-          style={{
-            minHeight: 'calc(100dvh - var(--header-height) - 180px)',
-            paddingBottom: 'calc(var(--mobile-nav-height, 70px) + 40px)',
-          }}
-        >
+        <LayoutWrapper>
           {children}
-        </main>
-        <Footer />
-        <MobileNav />
+        </LayoutWrapper>
       </body>
     </html>
   );

@@ -35,6 +35,7 @@ export function CinematicVideoPlayer({
 }: CinematicVideoPlayerProps) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
   const [isLiked, setIsLiked] = useState(false);
@@ -115,8 +116,16 @@ export function CinematicVideoPlayer({
       } else {
         videoRef.current.play();
         setIsPlaying(true);
-        // Toggle UI off for clean viewing if desired, but Reels usually keeps UI. 
-        // We'll toggle UI based on clicking if it's already playing.
+        // Attempt to enter fullscreen on mobile devices when playing starts
+        if (containerRef.current && window.innerWidth < 768 && !document.fullscreenElement) {
+          try {
+            if (containerRef.current.requestFullscreen) {
+              containerRef.current.requestFullscreen().catch(() => {});
+            } else if ((containerRef.current as any).webkitRequestFullscreen) {
+              (containerRef.current as any).webkitRequestFullscreen();
+            }
+          } catch (e) {}
+        }
       }
     }
   };
@@ -134,13 +143,14 @@ export function CinematicVideoPlayer({
 
   return (
     <div
+      ref={containerRef}
       onMouseMove={handleUserInteraction}
       onTouchStart={handleUserInteraction}
       onClick={handleUserInteraction}
       style={{
         position: 'relative',
         width: '100%',
-        height: '100dvh',
+        height: '100vh',
         backgroundColor: '#000',
         overflow: 'hidden',
       }}

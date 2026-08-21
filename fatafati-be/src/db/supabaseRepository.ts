@@ -442,7 +442,7 @@ export class SupabaseStoryRepository implements IStoryRepository {
     const { error } = await this.client.from('episode_choices').upsert({
       id: id,
       episode_id: choice.episodeId,
-      target_episode_id: choice.targetEpisodeId,
+      target_episode_id: choice.targetEpisodeId || null,
       label: choice.label,
       text: choice.text,
       description: choice.description || null,

@@ -37,3 +37,15 @@ npm run dev
 For more detailed information, please see the individual READMEs:
 - [Frontend README](./fatafati-fe/README.md)
 - [Backend README](./fatafati-be/README.md)
+
+## Admin Dashboard
+
+Plotplay includes a powerful, Cyberpunk-themed Admin Content Management Panel at `/admin/contents`. 
+
+![Plotplay Admin Dashboard](./docs/admin-page.png)
+
+### Features
+- **Series Management**: Create, edit, and delete Series, managing titles, genres, and cover images.
+- **Episode Editor**: Add synopses, attach video URLs, and configure thumbnails.
+- **Interactive Flags**: Toggle episode statuses (`ready`, `generating`, `scheduled`), set end-of-episode questions, and mark episodes as the Series Finale.
+- **Branching Choices**: Add branching options ("YES" / "NO"), configure action text, and assign target episode IDs to shape the user's interactive journey.

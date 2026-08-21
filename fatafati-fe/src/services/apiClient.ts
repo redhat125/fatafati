@@ -6,7 +6,8 @@ import {
   UserJourney, 
   SeriesGenre, 
   SortOption, 
-  ApiResponse 
+  ApiResponse,
+  EpisodeChoice
 } from '@fatafati/common';
 
 const rawBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').trim().replace(/\/+$/, '');
@@ -126,5 +127,39 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ seriesId, episodeId }),
     });
+  },
+
+  // --- Admin ---
+  async upsertSeries(series: Partial<Series>): Promise<Series> {
+    return request<Series>('/admin/series', {
+      method: 'PUT',
+      body: JSON.stringify(series),
+    });
+  },
+
+  async deleteSeries(id: string): Promise<void> {
+    return request<void>(`/admin/series/${id}`, { method: 'DELETE' });
+  },
+
+  async upsertEpisode(episode: Partial<Episode>): Promise<Episode> {
+    return request<Episode>('/admin/episodes', {
+      method: 'PUT',
+      body: JSON.stringify(episode),
+    });
+  },
+
+  async deleteEpisode(id: string): Promise<void> {
+    return request<void>(`/admin/episodes/${id}`, { method: 'DELETE' });
+  },
+
+  async upsertChoice(choice: Partial<EpisodeChoice> & { episodeId: string }): Promise<EpisodeChoice> {
+    return request<EpisodeChoice>('/admin/choices', {
+      method: 'PUT',
+      body: JSON.stringify(choice),
+    });
+  },
+
+  async deleteChoice(id: string): Promise<void> {
+    return request<void>(`/admin/choices/${id}`, { method: 'DELETE' });
   },
 };

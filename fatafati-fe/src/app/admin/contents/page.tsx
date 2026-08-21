@@ -262,6 +262,7 @@ export default function AdminContentsPage() {
                       <AdminChoiceForm 
                         episodeId={selectedEpisode.id}
                         choices={selectedEpisode.choices || []}
+                        allEpisodes={episodes}
                         onSave={handleSaveChoice}
                         onDelete={handleDeleteChoice}
                       />

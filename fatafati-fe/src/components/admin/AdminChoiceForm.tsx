@@ -1,17 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { EpisodeChoice } from '@fatafati/common';
+import { EpisodeChoice, Episode } from '@fatafati/common';
 import { Save, Trash2, Plus, GitMerge } from 'lucide-react';
 
 interface AdminChoiceFormProps {
   episodeId: string;
   choices: EpisodeChoice[];
+  allEpisodes: Episode[];
   onSave: (choice: Partial<EpisodeChoice> & { episodeId: string }) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }
 
-export function AdminChoiceForm({ episodeId, choices, onSave, onDelete }: AdminChoiceFormProps) {
+export function AdminChoiceForm({ episodeId, choices, allEpisodes, onSave, onDelete }: AdminChoiceFormProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<EpisodeChoice>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -117,7 +118,12 @@ export function AdminChoiceForm({ episodeId, choices, onSave, onDelete }: AdminC
                   </div>
                 </div>
                 <label style={labelStyle}>Target Episode ID</label>
-                <input type="text" name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange} style={inputStyle} placeholder="UUID of the next episode" required />
+                <select name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange as any} style={inputStyle} required>
+                  <option value="" disabled>Select target episode...</option>
+                  {allEpisodes.filter(e => e.id !== episodeId).map(e => (
+                    <option key={e.id} value={e.id}>Ep {e.episodeNumber}: {e.title}</option>
+                  ))}
+                </select>
                 
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
                   <button type="button" onClick={cancelEdit} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
@@ -160,7 +166,12 @@ export function AdminChoiceForm({ episodeId, choices, onSave, onDelete }: AdminC
               </div>
             </div>
             <label style={labelStyle}>Target Episode ID</label>
-            <input type="text" name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange} style={inputStyle} placeholder="UUID of the next episode" required />
+            <select name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange as any} style={inputStyle} required>
+              <option value="" disabled>Select target episode...</option>
+              {allEpisodes.filter(e => e.id !== episodeId).map(e => (
+                <option key={e.id} value={e.id}>Ep {e.episodeNumber}: {e.title}</option>
+              ))}
+            </select>
             
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
               <button type="button" onClick={cancelEdit} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>

@@ -374,3 +374,14 @@ button:active,
 .text-cyber-glow {
   text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 2px #fff;
 }
+
+/* Responsive video fit: cover on mobile to fill screen, contain on desktop to prevent cropping */
+.responsive-video-fit {
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .responsive-video-fit {
+    object-fit: contain;
+  }
+}

@@ -155,10 +155,10 @@ export function CinematicVideoPlayer({
         loop={false} // Stops at end for branching choice
         onClick={handleVideoClick}
         onEnded={handleEnded}
+        className="responsive-video-fit"
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'contain',
           cursor: 'pointer',
         }}
       />

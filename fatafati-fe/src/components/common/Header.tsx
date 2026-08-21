@@ -113,7 +113,7 @@ export function Header() {
             Discover
           </Link>
           <Link
-            href="/series/ai-boss"
+            href="/watch/random"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -125,7 +125,7 @@ export function Header() {
             }}
           >
             <Play size={16} color="#a855f7" />
-            Featured Series
+            Surprise
           </Link>
         </nav>
 

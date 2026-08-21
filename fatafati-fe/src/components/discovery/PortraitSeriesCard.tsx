@@ -122,7 +122,7 @@ export function PortraitSeriesCard({ series }: PortraitSeriesCardProps) {
                 marginBottom: '2px',
               }}
             >
-              A FATAFATI ORIGINAL
+              A PLOTPLAY ORIGINAL
             </div>
             
             <h3

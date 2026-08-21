@@ -7,17 +7,17 @@ import { INITIAL_SERIES, INITIAL_EPISODES, INITIAL_COMMENTS } from './seedData';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Missing SUPABASE_URL or SUPABASE_ANON_KEY in fatafati-be/.env');
+  console.error('❌ Missing SUPABASE_URL or keys in fatafati-be/.env');
   process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function seed() {
-  console.log('🚀 Seeding Supabase Database with FataFati story universe...');
+  console.log('🚀 Seeding Supabase Database with PlotPlay story universe...');
 
   try {
     // 1. Seed Series

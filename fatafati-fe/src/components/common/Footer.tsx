@@ -41,7 +41,7 @@ export function Footer() {
                 <Sparkles size={16} color="#07070a" strokeWidth={2.5} />
               </div>
               <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.2rem', color: '#fff' }}>
-                FataFati
+                PlotPlay
               </span>
             </div>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -86,7 +86,7 @@ export function Footer() {
             color: 'var(--text-muted)',
           }}
         >
-          <p>© 2026 FataFati. All branching narratives preserved.</p>
+          <p>© 2026 PlotPlay. All branching narratives preserved.</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span>Engineered for next-gen interactive storytelling</span>
           </div>

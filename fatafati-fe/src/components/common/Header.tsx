@@ -65,19 +65,23 @@ export function Header() {
           >
             <Sparkles size={22} color="#07070a" strokeWidth={2.5} />
           </div>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <span
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: '1.45rem',
                 fontWeight: 900,
                 letterSpacing: '-0.03em',
+                lineHeight: 1,
                 background: 'linear-gradient(135deg, #ffffff 30%, #00f0ff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              FataFati
+              PlotPlay
+            </span>
+            <span style={{ fontSize: '0.55rem', color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase', paddingLeft: '2px' }}>
+              you are the <span style={{ color: 'var(--accent-magenta)', fontWeight: 700 }}>director</span>
             </span>
           </div>
         </Link>

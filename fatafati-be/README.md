@@ -18,6 +18,23 @@ npm install
 
 Make sure you have your environment variables set up, especially for the Supabase connection (e.g., in a `.env` file at the root or within this directory depending on your setup).
 
+### Local Docker Database Setup (Recommended for Dev)
+
+To run a fully isolated local Supabase stack using Docker Desktop:
+
+1. Ensure Docker Desktop is running.
+2. Initialize and start Supabase locally (inside the `fatafati-be` directory):
+   ```bash
+   npx supabase start
+   ```
+3. Update your `.env` file with the local credentials outputted by the start command (API URL, anon key, service role key).
+4. Run the seed script to populate the local database with mock data:
+   ```bash
+   npm run seed
+   ```
+5. To access the local Supabase Studio dashboard, go to [http://127.0.0.1:54323](http://127.0.0.1:54323).
+6. When you are done, you can stop the containers with `npx supabase stop`.
+
 Then, run the development server:
 ```bash
 npm run dev

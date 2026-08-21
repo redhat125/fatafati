@@ -1,16 +1,41 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Play } from 'lucide-react';
 import { Series } from '@fatafati/common';
 
 interface HeroBannerProps {
-  series: Series;
+  seriesList: Series[];
 }
 
-export function HeroBanner({ series }: HeroBannerProps) {
-  if (!series) return null;
+export function HeroBanner({ seriesList }: HeroBannerProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-scroll logic
+  const resetTimeout = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  useEffect(() => {
+    if (!seriesList || seriesList.length <= 1) return;
+    
+    resetTimeout();
+    timeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prevIndex) => (prevIndex === seriesList.length - 1 ? 0 : prevIndex + 1));
+    }, 5000); // 5 seconds per slide
+
+    return () => {
+      resetTimeout();
+    };
+  }, [currentIndex, seriesList.length]);
+
+  if (!seriesList || seriesList.length === 0) return null;
+
+  const currentSeries = seriesList[currentIndex];
 
   return (
     <section
@@ -36,116 +61,145 @@ export function HeroBanner({ series }: HeroBannerProps) {
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.05)',
         }}
       >
-        {/* Backdrop Image */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${series.coverImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'top',
-            filter: 'brightness(0.9) contrast(1.1)',
-            zIndex: 0,
-          }}
-        />
-
-        {/* Gradient Overlay for Text Readability at Bottom */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(180deg, rgba(15,16,22,0) 0%, rgba(15,16,22,0.2) 50%, rgba(21,22,31,0.98) 100%)',
-            zIndex: 1,
-          }}
-        />
-
-        {/* Hero Content (Centered at Bottom) */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 2,
-            padding: '32px 20px 24px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-          }}
-        >
-          {/* Top Badge */}
+        {/* Animated Carousel Items */}
+        {seriesList.map((series, index) => (
           <div
+            key={series.id}
             style={{
-              fontSize: '0.65rem',
-              fontWeight: 800,
-              color: 'var(--accent-magenta)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '8px',
-              textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+              position: 'absolute',
+              inset: 0,
+              opacity: index === currentIndex ? 1 : 0,
+              transition: 'opacity 0.8s ease-in-out',
+              pointerEvents: index === currentIndex ? 'auto' : 'none',
+              zIndex: index === currentIndex ? 1 : 0,
             }}
           >
-            A FATAFATI ORIGINAL
-          </div>
-
-          {/* Title */}
-          <h1
-            style={{
-              fontSize: 'clamp(2rem, 8vw, 3rem)',
-              lineHeight: 1,
-              fontWeight: 800,
-              color: '#fff',
-              marginBottom: '16px',
-              textShadow: '0 4px 16px rgba(0,0,0,0.8)',
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            {series.title}
-          </h1>
-
-          {/* Watch Now Button */}
-          <Link href={`/watch/${series.rootEpisodeId}`} style={{ textDecoration: 'none', width: '100%', maxWidth: '240px' }}>
-            <button
+            {/* Backdrop Image */}
+            <div
               style={{
-                width: '100%',
-                padding: '12px 24px',
-                borderRadius: 'var(--radius-full)',
-                background: 'var(--accent-magenta)',
-                color: '#fff',
-                fontSize: '1rem',
-                fontWeight: 700,
-                border: 'none',
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${series.coverImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'top',
+                filter: 'brightness(0.9) contrast(1.1)',
+                zIndex: 0,
+              }}
+            />
+
+            {/* Gradient Overlay for Text Readability at Bottom */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(180deg, rgba(15,16,22,0) 0%, rgba(15,16,22,0.2) 50%, rgba(21,22,31,0.98) 100%)',
+                zIndex: 1,
+              }}
+            />
+
+            {/* Hero Content (Centered at Bottom) */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 2,
+                padding: '32px 20px 24px',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 16px rgba(236, 72, 153, 0.4)',
-                cursor: 'pointer',
+                textAlign: 'center',
               }}
             >
-              Watch Now <Play size={18} fill="#fff" />
-            </button>
-          </Link>
-        </div>
+              {/* Top Badge */}
+              <div
+                style={{
+                  fontSize: '0.65rem',
+                  fontWeight: 800,
+                  color: 'var(--accent-magenta)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: '8px',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                }}
+              >
+                A PLOTPLAY ORIGINAL
+              </div>
+
+              {/* Title */}
+              <h1
+                style={{
+                  fontSize: 'clamp(2rem, 8vw, 3rem)',
+                  lineHeight: 1,
+                  fontWeight: 800,
+                  color: '#fff',
+                  marginBottom: '16px',
+                  textShadow: '0 4px 16px rgba(0,0,0,0.8)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                {series.title}
+              </h1>
+
+              {/* Watch Now Button */}
+              <Link href={`/watch/${series.rootEpisodeId}`} style={{ textDecoration: 'none', width: '100%', maxWidth: '240px' }}>
+                <button
+                  style={{
+                    width: '100%',
+                    padding: '12px 24px',
+                    borderRadius: 'var(--radius-full)',
+                    background: 'var(--accent-magenta)',
+                    color: '#fff',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    boxShadow: '0 4px 16px rgba(236, 72, 153, 0.4)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Watch Now <Play size={18} fill="#fff" />
+                </button>
+              </Link>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Carousel Dots */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '8px',
-          marginTop: '16px',
-        }}
-      >
-        <span style={{ width: '16px', height: '6px', borderRadius: '4px', background: '#fff' }} />
-        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
-        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
-        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
-        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
-      </div>
+      {seriesList.length > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '8px',
+            marginTop: '16px',
+          }}
+        >
+          {seriesList.map((_, index) => (
+            <span
+              key={index}
+              onClick={() => {
+                setCurrentIndex(index);
+                resetTimeout();
+              }}
+              style={{
+                width: index === currentIndex ? '16px' : '6px',
+                height: '6px',
+                borderRadius: index === currentIndex ? '4px' : '50%',
+                background: index === currentIndex ? '#fff' : 'var(--text-muted)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

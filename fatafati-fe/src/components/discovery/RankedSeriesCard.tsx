@@ -117,7 +117,7 @@ export function RankedSeriesCard({ series, rank }: RankedSeriesCardProps) {
                   marginBottom: '2px',
                 }}
               >
-                A FATAFATI ORIGINAL
+                A PLOTPLAY ORIGINAL
               </div>
               
               <h3

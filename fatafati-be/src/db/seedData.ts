@@ -80,6 +80,23 @@ export const INITIAL_SERIES: Series[] = [
     createdAt: '2026-08-04T18:00:00Z',
     updatedAt: '2026-08-08T14:10:00Z',
   },
+  {
+    id: 'ai-villa',
+    title: 'AI VILLA: THE REAL VIRTUAL SHOW',
+    tagline: 'A PLOTPLAY ORIGINAL',
+    description: 'Welcome to AI Villa, where the drama is real but the contestants might not be. Dive into the world\'s first AI reality show.',
+    coverImage: 'https://hdmorcofjgcaoeedcrdc.supabase.co/storage/v1/object/public/images/thevilla-ai-v2-thumb.png',
+    backdropImage: 'https://hdmorcofjgcaoeedcrdc.supabase.co/storage/v1/object/public/images/thevilla-ai-v2-thumb.png',
+    genre: 'drama',
+    tags: ['Reality', 'AI', 'Drama', 'Romance'],
+    totalEpisodes: 1,
+    totalPaths: 1,
+    viewCount: 38500,
+    rating: 4.9,
+    rootEpisodeId: 'av-ep-1',
+    createdAt: '2026-08-10T10:00:00Z',
+    updatedAt: '2026-08-10T10:00:00Z',
+  },
 ];
 
 export const INITIAL_EPISODES: Episode[] = [
@@ -605,6 +622,26 @@ export const INITIAL_EPISODES: Episode[] = [
     isLeaf: true,
     choices: [],
     createdAt: '2026-08-04T18:45:00Z',
+  },
+  // =========================================================================
+  // SERIES 5: AI VILLA
+  // =========================================================================
+  {
+    id: 'av-ep-1',
+    seriesId: 'ai-villa',
+    parentEpisodeId: null,
+    choicePromptLeadingHere: null,
+    episodeNumber: 1,
+    title: 'Pilot: The Introduction',
+    synopsis: 'Meet the diverse cast of AI Villa as they enter the house. Tensions rise early and connections form instantly.',
+    videoUrl: 'https://hdmorcofjgcaoeedcrdc.supabase.co/storage/v1/object/public/videos/thevilla-ai-v2.mp4',
+    thumbnailUrl: 'https://hdmorcofjgcaoeedcrdc.supabase.co/storage/v1/object/public/images/thevilla-ai-v2-thumb.png',
+    durationSeconds: 120,
+    aspectRatio: '9:16', // Vertical format
+    viewCount: 38500,
+    isLeaf: true, // Only one episode for now
+    choices: [],
+    createdAt: '2026-08-10T10:00:00Z',
   },
 ];
 

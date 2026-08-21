@@ -5,7 +5,7 @@ import { Footer } from '../components/common/Footer';
 import { MobileNav } from '../components/common/MobileNav';
 
 export const metadata: Metadata = {
-  title: 'FataFati — AI-Driven Interactive Branching Micro-Series',
+  title: 'PlotPlay — AI-Driven Interactive Branching Micro-Series',
   description:
     'Experience next-generation interactive AI cinema. Watch 30-60 second micro-episodes, choose your path at pivotal moments, explore branching narrative universes, and vote on community-crafted storylines.',
   keywords: [
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     'branching narrative',
     'choose your own adventure',
     'micro-episodes',
-    'FataFati',
+    'PlotPlay',
   ],
 };
 

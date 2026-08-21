@@ -14,8 +14,8 @@ export default function HomePage() {
   // Sort by views for Top 10
   const top10Series = [...seriesList].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 10);
   
-  // Featured (Rank 1)
-  const featuredSeries = top10Series.length > 0 ? top10Series[0] : null;
+  // Featured (Top 5)
+  const featuredSeriesList = top10Series.slice(0, 5);
 
   // Filter for specific genres/sections (fallback to all if few items)
   const sciFiAndCyberpunk = seriesList.filter(s => ['sci-fi', 'cyberpunk', 'space'].includes(s.genre));
@@ -27,7 +27,7 @@ export default function HomePage() {
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-secondary)' }}>
           <Sparkles size={32} color="#ec4899" style={{ margin: '0 auto 12px auto' }} />
-          <p>Loading Fatafati Originals...</p>
+          <p>Loading PlotPlay Originals...</p>
         </div>
       ) : error ? (
         <div style={{ textAlign: 'center', padding: '60px 0', color: '#ef4444' }}>
@@ -40,16 +40,16 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          {/* Flagship Hero Story */}
-          {featuredSeries && (
+          {/* Flagship Hero Story Slider */}
+          {featuredSeriesList.length > 0 && (
             <div style={{ padding: '0 16px' }}>
-              <HeroBanner series={featuredSeries} />
+              <HeroBanner seriesList={featuredSeriesList} />
             </div>
           )}
 
           {/* Top 10 Section */}
           {top10Series.length > 0 && (
-            <HorizontalScrollSection title="Top 10 on Fatafati" showSeeAll={false}>
+            <HorizontalScrollSection title="Top 10 on PlotPlay" showSeeAll={false}>
               {top10Series.map((series, index) => (
                 <RankedSeriesCard key={`top10-${series.id}`} series={series} rank={index + 1} />
               ))}

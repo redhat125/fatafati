@@ -56,7 +56,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <h2 style={{ fontSize: '1.4rem' }}>{authorName}</h2>
-            <p style={{ color: 'var(--text-secondary)' }}>Fatafati Creator</p>
+            <p style={{ color: 'var(--text-secondary)' }}>PlotPlay Creator</p>
           </div>
         </div>
 

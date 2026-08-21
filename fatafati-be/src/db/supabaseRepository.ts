@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 import { 
   Series, 
   Episode, 
@@ -388,8 +389,9 @@ export class SupabaseStoryRepository implements IStoryRepository {
   // --- Admin Methods ---
 
   async upsertSeries(series: Series): Promise<Series> {
+    const id = series.id || crypto.randomUUID();
     const { error } = await this.client.from('series').upsert({
-      id: series.id,
+      id: id,
       title: series.title,
       tagline: series.tagline,
       description: series.description,
@@ -411,8 +413,9 @@ export class SupabaseStoryRepository implements IStoryRepository {
   }
 
   async upsertEpisode(episode: Episode): Promise<Episode> {
+    const id = episode.id || crypto.randomUUID();
     const { error } = await this.client.from('episodes').upsert({
-      id: episode.id,
+      id: id,
       series_id: episode.seriesId,
       parent_episode_id: episode.parentEpisodeId || null,
       choice_prompt_leading_here: episode.choicePromptLeadingHere || null,
@@ -435,8 +438,9 @@ export class SupabaseStoryRepository implements IStoryRepository {
   }
 
   async upsertEpisodeChoice(choice: import('@fatafati/common').EpisodeChoice & { episodeId: string }): Promise<import('@fatafati/common').EpisodeChoice> {
+    const id = (choice.id && choice.id !== 'new') ? choice.id : crypto.randomUUID();
     const { error } = await this.client.from('episode_choices').upsert({
-      id: choice.id,
+      id: id,
       episode_id: choice.episodeId,
       target_episode_id: choice.targetEpisodeId,
       label: choice.label,

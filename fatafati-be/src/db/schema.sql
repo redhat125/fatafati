@@ -133,46 +133,70 @@ ALTER TABLE user_journeys ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_choices ENABLE ROW LEVEL SECURITY;
 
 -- Allow Public Read on catalog & episodes
+DROP POLICY IF EXISTS "Public can view series" ON series;
 CREATE POLICY "Public can view series" ON series FOR
 SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public can view episodes" ON episodes;
 CREATE POLICY "Public can view episodes" ON episodes FOR
 SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public can view choices" ON episode_choices;
 CREATE POLICY "Public can view choices" ON episode_choices FOR
 SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public can view comments" ON comments;
 CREATE POLICY "Public can view comments" ON comments FOR
 SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public can view votes" ON comment_votes;
 CREATE POLICY "Public can view votes" ON comment_votes FOR
 SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public can view user_journeys" ON user_journeys;
 CREATE POLICY "Public can view user_journeys" ON user_journeys FOR
 SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public can view user_choices" ON user_choices;
 CREATE POLICY "Public can view user_choices" ON user_choices FOR
 SELECT USING (true);
 
 -- Allow Public Insert & Update for Series, Episodes, Choices (Seeding & Admin)
+DROP POLICY IF EXISTS "Public can insert series" ON series;
 CREATE POLICY "Public can insert series" ON series FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update series" ON series;
 CREATE POLICY "Public can update series" ON series FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Public can delete series" ON series;
 CREATE POLICY "Public can delete series" ON series FOR DELETE USING (true);
+DROP POLICY IF EXISTS "Public can insert episodes" ON episodes;
 CREATE POLICY "Public can insert episodes" ON episodes FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update episodes" ON episodes;
 CREATE POLICY "Public can update episodes" ON episodes FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Public can delete episodes" ON episodes;
 CREATE POLICY "Public can delete episodes" ON episodes FOR DELETE USING (true);
+DROP POLICY IF EXISTS "Public can insert choices" ON episode_choices;
 CREATE POLICY "Public can insert choices" ON episode_choices FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update choices" ON episode_choices;
 CREATE POLICY "Public can update choices" ON episode_choices FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Public can delete choices" ON episode_choices;
 CREATE POLICY "Public can delete choices" ON episode_choices FOR DELETE USING (true);
 
 -- Allow Public Insert & Update for Community Pitches & Votes
+DROP POLICY IF EXISTS "Public can insert comments" ON comments;
 CREATE POLICY "Public can insert comments" ON comments FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update comment score" ON comments;
 CREATE POLICY "Public can update comment score" ON comments FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Public can insert votes" ON comment_votes;
 CREATE POLICY "Public can insert votes" ON comment_votes FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update votes" ON comment_votes;
 CREATE POLICY "Public can update votes" ON comment_votes FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Public can insert user_journeys" ON user_journeys;
 CREATE POLICY "Public can insert user_journeys" ON user_journeys FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update user_journeys" ON user_journeys;
 CREATE POLICY "Public can update user_journeys" ON user_journeys FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Public can insert user_choices" ON user_choices;
 CREATE POLICY "Public can insert user_choices" ON user_choices FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can update user_choices" ON user_choices;
 CREATE POLICY "Public can update user_choices" ON user_choices FOR UPDATE USING (true);
 
 -- ========================================================================

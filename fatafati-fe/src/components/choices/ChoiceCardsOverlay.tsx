@@ -30,7 +30,7 @@ export function ChoiceCardsOverlay({
   }, []);
 
   const handleChoiceClick = (choice: EpisodeChoice) => {
-    const status = videoStatusMap[choice.targetEpisodeId] || 'ready';
+    const status = !choice.targetEpisodeId ? 'generating' : (videoStatusMap[choice.targetEpisodeId] || 'ready');
     if (status !== 'ready') {
       setCookingChoice(choice);
       onSelectChoice(choice);

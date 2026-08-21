@@ -143,13 +143,14 @@ export default function RandomWatchPage() {
       const episodeId = feedItems[activeIndex].episode.id;
       await api.choosePath(episodeId, choice.id);
       
-      const status = videoStatusMap[choice.targetEpisodeId] || 'ready';
+      const status = !choice.targetEpisodeId ? 'generating' : (videoStatusMap[choice.targetEpisodeId] || 'ready');
       if (status === 'ready') {
         router.push(`/watch/${choice.targetEpisodeId}`);
       }
     } catch (err) {
       console.error('Failed to record choice:', err);
-      if (videoStatusMap[choice.targetEpisodeId] !== 'generating') {
+      const fallbackStatus = !choice.targetEpisodeId ? 'generating' : (videoStatusMap[choice.targetEpisodeId] || 'ready');
+      if (fallbackStatus === 'ready') {
         router.push(`/watch/${choice.targetEpisodeId}`);
       }
     }

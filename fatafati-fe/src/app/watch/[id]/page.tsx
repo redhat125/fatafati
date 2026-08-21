@@ -92,14 +92,15 @@ export default function WatchEpisodePage() {
     try {
       await api.choosePath(episodeId!, choice.id);
       
-      const status = videoStatusMap[choice.targetEpisodeId] || 'ready';
+      const status = !choice.targetEpisodeId ? 'generating' : (videoStatusMap[choice.targetEpisodeId] || 'ready');
       if (status === 'ready') {
         router.push(`/watch/${choice.targetEpisodeId}`);
       }
     } catch (err) {
       console.error('Failed to record choice:', err);
       // Fallback route on error if ready
-      if (videoStatusMap[choice.targetEpisodeId] !== 'generating') {
+      const fallbackStatus = !choice.targetEpisodeId ? 'generating' : (videoStatusMap[choice.targetEpisodeId] || 'ready');
+      if (fallbackStatus === 'ready') {
         router.push(`/watch/${choice.targetEpisodeId}`);
       }
     }

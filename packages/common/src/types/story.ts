@@ -51,6 +51,7 @@ export interface Episode {
   seriesId: string;
   parentEpisodeId: string | null;
   choicePromptLeadingHere?: string | null;
+  choiceQuestion?: string | null; // The question asked at the end of this episode
   episodeNumber: number; // Tree depth (1 = root)
   title: string;
   synopsis: string;
@@ -60,7 +61,17 @@ export interface Episode {
   aspectRatio: AspectRatio;
   viewCount: number;
   isLeaf: boolean;
+  isSeriesFinale: boolean;
+  videoStatus: 'ready' | 'generating' | 'scheduled';
   choices: EpisodeChoice[];
+  createdAt: string;
+}
+
+export interface UserChoice {
+  id: string;
+  sessionId: string;
+  episodeId: string;
+  choiceId: string;
   createdAt: string;
 }
 

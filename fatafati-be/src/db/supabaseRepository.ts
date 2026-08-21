@@ -117,9 +117,12 @@ export class SupabaseStoryRepository implements IStoryRepository {
       videoUrl: epData.video_url,
       thumbnailUrl: epData.thumbnail_url,
       durationSeconds: epData.duration_seconds,
-      aspectRatio: epData.aspect_ratio || '16:9',
+      aspectRatio: epData.aspect_ratio,
       viewCount: epData.view_count,
       isLeaf: epData.is_leaf,
+      isSeriesFinale: epData.is_series_finale || false,
+      videoStatus: epData.video_status || 'ready',
+      choiceQuestion: epData.choice_question,
       choices,
       createdAt: epData.created_at,
     };
@@ -146,6 +149,9 @@ export class SupabaseStoryRepository implements IStoryRepository {
         aspectRatio: epData.aspect_ratio || '16:9',
         viewCount: epData.view_count,
         isLeaf: epData.is_leaf,
+        isSeriesFinale: epData.is_series_finale || false,
+        videoStatus: epData.video_status || 'ready',
+        choiceQuestion: epData.choice_question,
         choices: (choicesData || []).map((c) => ({
           id: c.id,
           targetEpisodeId: c.target_episode_id,
@@ -365,5 +371,97 @@ export class SupabaseStoryRepository implements IStoryRepository {
       currentEpisodeId: data.current_episode_id,
       updatedAt: data.updated_at,
     };
+  }
+
+  async recordUserChoice(sessionId: string, episodeId: string, choiceId: string): Promise<void> {
+    const { error } = await this.client.from('user_choices').upsert(
+      {
+        session_id: sessionId,
+        episode_id: episodeId,
+        choice_id: choiceId,
+      },
+      { onConflict: 'session_id,episode_id' }
+    );
+    if (error) throw new Error(error.message);
+  }
+
+  // --- Admin Methods ---
+
+  async upsertSeries(series: Series): Promise<Series> {
+    const { error } = await this.client.from('series').upsert({
+      id: series.id,
+      title: series.title,
+      tagline: series.tagline,
+      description: series.description,
+      cover_image: series.coverImage,
+      backdrop_image: series.backdropImage,
+      preview_video_url: series.previewVideoUrl || null,
+      genre: series.genre,
+      tags: series.tags,
+      total_episodes: series.totalEpisodes,
+      total_paths: series.totalPaths,
+      view_count: series.viewCount,
+      rating: series.rating,
+      root_episode_id: series.rootEpisodeId,
+      created_at: series.createdAt,
+      updated_at: series.updatedAt,
+    });
+    if (error) throw new Error(error.message);
+    return series;
+  }
+
+  async upsertEpisode(episode: Episode): Promise<Episode> {
+    const { error } = await this.client.from('episodes').upsert({
+      id: episode.id,
+      series_id: episode.seriesId,
+      parent_episode_id: episode.parentEpisodeId || null,
+      choice_prompt_leading_here: episode.choicePromptLeadingHere || null,
+      choice_question: episode.choiceQuestion || null,
+      episode_number: episode.episodeNumber,
+      title: episode.title,
+      synopsis: episode.synopsis,
+      video_url: episode.videoUrl,
+      thumbnail_url: episode.thumbnailUrl,
+      duration_seconds: episode.durationSeconds,
+      aspect_ratio: episode.aspectRatio,
+      view_count: episode.viewCount,
+      is_leaf: episode.isLeaf,
+      is_series_finale: episode.isSeriesFinale,
+      video_status: episode.videoStatus,
+      created_at: episode.createdAt,
+    });
+    if (error) throw new Error(error.message);
+    return episode;
+  }
+
+  async upsertEpisodeChoice(choice: import('@fatafati/common').EpisodeChoice & { episodeId: string }): Promise<import('@fatafati/common').EpisodeChoice> {
+    const { error } = await this.client.from('episode_choices').upsert({
+      id: choice.id,
+      episode_id: choice.episodeId,
+      target_episode_id: choice.targetEpisodeId,
+      label: choice.label,
+      text: choice.text,
+      description: choice.description || null,
+      preview_thumbnail_url: choice.previewThumbnailUrl || null,
+      pick_count: choice.pickCount,
+      pick_percentage: choice.pickPercentage,
+    });
+    if (error) throw new Error(error.message);
+    return choice;
+  }
+
+  async deleteEpisode(id: string): Promise<void> {
+    const { error } = await this.client.from('episodes').delete().eq('id', id);
+    if (error) throw new Error(error.message);
+  }
+
+  async deleteSeries(id: string): Promise<void> {
+    const { error } = await this.client.from('series').delete().eq('id', id);
+    if (error) throw new Error(error.message);
+  }
+
+  async deleteEpisodeChoice(id: string): Promise<void> {
+    const { error } = await this.client.from('episode_choices').delete().eq('id', id);
+    if (error) throw new Error(error.message);
   }
 }

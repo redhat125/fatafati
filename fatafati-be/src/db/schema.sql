@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS episodes (
     aspect_ratio TEXT DEFAULT '16:9',
     view_count INT DEFAULT 0,
     is_leaf BOOLEAN DEFAULT FALSE,
+    is_series_finale BOOLEAN DEFAULT FALSE,
+    video_status TEXT DEFAULT 'ready',
+    choice_question TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -102,6 +105,16 @@ CREATE TABLE IF NOT EXISTS user_journeys (
     UNIQUE (session_id, series_id)
 );
 
+-- 7. User Choices Table
+CREATE TABLE IF NOT EXISTS user_choices (
+    id TEXT PRIMARY KEY DEFAULT uuid_generate_v4 ()::TEXT,
+    session_id TEXT NOT NULL,
+    episode_id TEXT NOT NULL REFERENCES episodes (id) ON DELETE CASCADE,
+    choice_id TEXT NOT NULL REFERENCES episode_choices (id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (session_id, episode_id)
+);
+
 -- ========================================================================
 -- Enable Row Level Security (RLS) & Public Policies
 -- ========================================================================
@@ -116,6 +129,8 @@ ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comment_votes ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE user_journeys ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE user_choices ENABLE ROW LEVEL SECURITY;
 
 -- Allow Public Read on catalog & episodes
 CREATE POLICY "Public can view series" ON series FOR
@@ -136,13 +151,19 @@ SELECT USING (true);
 CREATE POLICY "Public can view user_journeys" ON user_journeys FOR
 SELECT USING (true);
 
+CREATE POLICY "Public can view user_choices" ON user_choices FOR
+SELECT USING (true);
+
 -- Allow Public Insert & Update for Series, Episodes, Choices (Seeding & Admin)
 CREATE POLICY "Public can insert series" ON series FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public can update series" ON series FOR UPDATE USING (true);
+CREATE POLICY "Public can delete series" ON series FOR DELETE USING (true);
 CREATE POLICY "Public can insert episodes" ON episodes FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public can update episodes" ON episodes FOR UPDATE USING (true);
+CREATE POLICY "Public can delete episodes" ON episodes FOR DELETE USING (true);
 CREATE POLICY "Public can insert choices" ON episode_choices FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public can update choices" ON episode_choices FOR UPDATE USING (true);
+CREATE POLICY "Public can delete choices" ON episode_choices FOR DELETE USING (true);
 
 -- Allow Public Insert & Update for Community Pitches & Votes
 CREATE POLICY "Public can insert comments" ON comments FOR INSERT WITH CHECK (true);
@@ -151,3 +172,12 @@ CREATE POLICY "Public can insert votes" ON comment_votes FOR INSERT WITH CHECK (
 CREATE POLICY "Public can update votes" ON comment_votes FOR UPDATE USING (true);
 CREATE POLICY "Public can insert user_journeys" ON user_journeys FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public can update user_journeys" ON user_journeys FOR UPDATE USING (true);
+CREATE POLICY "Public can insert user_choices" ON user_choices FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public can update user_choices" ON user_choices FOR UPDATE USING (true);
+
+-- ========================================================================
+-- Grants
+-- ========================================================================
+GRANT ALL ON ALL TABLES IN SCHEMA public TO postgres, anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO postgres, anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO postgres, anon, authenticated, service_role;

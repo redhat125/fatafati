@@ -34,6 +34,7 @@ export interface Episode {
     seriesId: string;
     parentEpisodeId: string | null;
     choicePromptLeadingHere?: string | null;
+    choiceQuestion?: string | null;
     episodeNumber: number;
     title: string;
     synopsis: string;
@@ -43,7 +44,16 @@ export interface Episode {
     aspectRatio: AspectRatio;
     viewCount: number;
     isLeaf: boolean;
+    isSeriesFinale: boolean;
+    videoStatus: 'ready' | 'generating' | 'scheduled';
     choices: EpisodeChoice[];
+    createdAt: string;
+}
+export interface UserChoice {
+    id: string;
+    sessionId: string;
+    episodeId: string;
+    choiceId: string;
     createdAt: string;
 }
 export interface Comment {

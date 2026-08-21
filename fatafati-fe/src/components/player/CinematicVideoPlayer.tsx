@@ -15,6 +15,8 @@ interface CinematicVideoPlayerProps {
   onOpenMap?: () => void;
   onOpenComments?: () => void;
   onOpenDetails?: () => void;
+  isActive?: boolean;
+  isSurpriseMode?: boolean;
 }
 
 export function CinematicVideoPlayer({
@@ -28,6 +30,8 @@ export function CinematicVideoPlayer({
   onOpenMap,
   onOpenComments,
   onOpenDetails,
+  isActive = true,
+  isSurpriseMode = false,
 }: CinematicVideoPlayerProps) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -35,6 +39,43 @@ export function CinematicVideoPlayer({
   const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
   const [isLiked, setIsLiked] = useState(false);
   const [showUI, setShowUI] = useState(true);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const uiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-hide UI logic
+  const resetUITimer = () => {
+    setShowUI(true);
+    if (uiTimeoutRef.current) {
+      clearTimeout(uiTimeoutRef.current);
+    }
+    
+    // In surprise mode, don't start the auto-hide timer until the user has interacted at least once
+    if (isSurpriseMode && !hasInteracted) {
+      return;
+    }
+
+    // Only auto-hide if playing
+    if (isPlaying) {
+      uiTimeoutRef.current = setTimeout(() => {
+        setShowUI(false);
+      }, 3500);
+    }
+  };
+
+  useEffect(() => {
+    resetUITimer();
+    return () => {
+      if (uiTimeoutRef.current) clearTimeout(uiTimeoutRef.current);
+    };
+  }, [isPlaying, hasInteracted]);
+
+  const handleUserInteraction = () => {
+    if (!hasInteracted) {
+      setHasInteracted(true);
+    } else {
+      resetUITimer();
+    }
+  };
 
   // Format views
   const formatCount = (count: number) => {
@@ -45,7 +86,7 @@ export function CinematicVideoPlayer({
 
   useEffect(() => {
     if (videoRef.current) {
-      if (autoPlay) {
+      if (isActive && autoPlay) {
         videoRef.current.play().catch(() => {
           // Autoplay policy fallback
           if (videoRef.current) {
@@ -54,9 +95,16 @@ export function CinematicVideoPlayer({
           }
         });
         setIsPlaying(true);
+      } else if (!isActive) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+        setIsPlaying(false);
+        // Reset interaction state when inactive so it's fresh when scrolling back
+        setHasInteracted(false);
+        setShowUI(true);
       }
     }
-  }, [videoUrl, autoPlay]);
+  }, [videoUrl, autoPlay, isActive]);
 
   const handleVideoClick = () => {
     if (videoRef.current) {
@@ -86,6 +134,9 @@ export function CinematicVideoPlayer({
 
   return (
     <div
+      onMouseMove={handleUserInteraction}
+      onTouchStart={handleUserInteraction}
+      onClick={handleUserInteraction}
       style={{
         position: 'relative',
         width: '100%',

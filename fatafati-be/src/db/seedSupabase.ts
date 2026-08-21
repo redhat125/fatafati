@@ -64,6 +64,9 @@ async function seed() {
         aspect_ratio: ep.aspectRatio || '16:9',
         view_count: ep.viewCount || 0,
         is_leaf: ep.isLeaf || false,
+        is_series_finale: ep.isSeriesFinale || false,
+        video_status: ep.videoStatus || 'ready',
+        choice_question: ep.choiceQuestion || null,
         created_at: ep.createdAt,
       });
 

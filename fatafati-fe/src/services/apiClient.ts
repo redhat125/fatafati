@@ -87,10 +87,10 @@ export const api = {
     }>(`/episodes/${id}`);
   },
 
-  async choosePath(choiceId: string): Promise<void> {
-    await request<void>('/episodes/choose', {
+  async choosePath(episodeId: string, choiceId: string): Promise<void> {
+    await request<void>('/choices', {
       method: 'POST',
-      body: JSON.stringify({ choiceId }),
+      body: JSON.stringify({ episodeId, choiceId }),
     });
   },
 

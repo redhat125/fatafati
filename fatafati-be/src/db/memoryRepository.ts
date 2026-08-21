@@ -224,4 +224,46 @@ export class MemoryStoryRepository implements IStoryRepository {
     this.journeys.set(key, JSON.parse(JSON.stringify(journey)));
     return JSON.parse(JSON.stringify(journey));
   }
+
+  async recordUserChoice(sessionId: string, episodeId: string, choiceId: string): Promise<void> {
+    // In-memory implementation doesn't need to persist this, but we can stub it
+    console.log(`[MemoryRepo] recordUserChoice: ${sessionId} -> ${episodeId} chose ${choiceId}`);
+  }
+
+  async upsertSeries(series: Series): Promise<Series> {
+    this.series.set(series.id, JSON.parse(JSON.stringify(series)));
+    return series;
+  }
+
+  async upsertEpisode(episode: Episode): Promise<Episode> {
+    this.episodes.set(episode.id, JSON.parse(JSON.stringify(episode)));
+    return episode;
+  }
+
+  async upsertEpisodeChoice(choice: import('@fatafati/common').EpisodeChoice & { episodeId: string }): Promise<import('@fatafati/common').EpisodeChoice> {
+    const ep = this.episodes.get(choice.episodeId);
+    if (ep) {
+      const existingIdx = ep.choices.findIndex(c => c.id === choice.id);
+      if (existingIdx >= 0) {
+        ep.choices[existingIdx] = choice;
+      } else {
+        ep.choices.push(choice);
+      }
+    }
+    return choice;
+  }
+
+  async deleteEpisode(id: string): Promise<void> {
+    this.episodes.delete(id);
+  }
+
+  async deleteSeries(id: string): Promise<void> {
+    this.series.delete(id);
+  }
+
+  async deleteEpisodeChoice(id: string): Promise<void> {
+    for (const ep of this.episodes.values()) {
+      ep.choices = ep.choices.filter(c => c.id !== id);
+    }
+  }
 }

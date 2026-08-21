@@ -27,7 +27,8 @@ export function Header() {
         height: 'var(--header-height)',
         background: 'rgba(7, 7, 10, 0.85)',
         backdropFilter: 'blur(16px)',
-        borderBottom: 'var(--border-glass)',
+        borderBottom: '2px solid var(--accent-cyan)',
+        boxShadow: '0 0 20px rgba(0, 240, 255, 0.2)',
         display: 'flex',
         alignItems: 'center',
       }}
@@ -67,13 +68,14 @@ export function Header() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <span
+              className="text-cyber-glow"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: '1.45rem',
                 fontWeight: 900,
                 letterSpacing: '-0.03em',
                 lineHeight: 1,
-                background: 'linear-gradient(135deg, #ffffff 30%, #00f0ff 100%)',
+                background: 'linear-gradient(135deg, #00f0ff 30%, #ec4899 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -204,6 +206,12 @@ export function Header() {
             </button>
           )}
         </div>
+      </div>
+      {/* Decorative cyber track at the bottom of header */}
+      <div style={{ position: 'absolute', bottom: -2, left: '20px', display: 'flex', gap: '4px', opacity: 0.8 }}>
+        <div style={{ width: '40px', height: '2px', background: '#ec4899' }} />
+        <div style={{ width: '15px', height: '2px', background: '#ec4899' }} />
+        <div style={{ width: '8px', height: '2px', background: '#ec4899' }} />
       </div>
     </header>
   );

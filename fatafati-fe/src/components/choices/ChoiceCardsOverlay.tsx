@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { EpisodeChoice, Episode } from '@fatafati/common';
 import { PathCard } from './PathCard';
-import { Sparkles, GitFork, RotateCcw, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface ChoiceCardsOverlayProps {
@@ -11,6 +10,7 @@ interface ChoiceCardsOverlayProps {
   onSelectChoice: (choice: EpisodeChoice) => void;
   onRewatch: () => void;
   seriesId: string;
+  videoStatusMap: Record<string, 'ready' | 'generating' | 'scheduled'>;
 }
 
 export function ChoiceCardsOverlay({
@@ -18,141 +18,124 @@ export function ChoiceCardsOverlay({
   onSelectChoice,
   onRewatch,
   seriesId,
+  videoStatusMap,
 }: ChoiceCardsOverlayProps) {
+  const [isGlitching, setIsGlitching] = useState(true);
+  const [cookingChoice, setCookingChoice] = useState<EpisodeChoice | null>(null);
+
+  // Trigger glitch animation on mount
+  useEffect(() => {
+    const timer = setTimeout(() => setIsGlitching(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleChoiceClick = (choice: EpisodeChoice) => {
+    const status = videoStatusMap[choice.targetEpisodeId] || 'ready';
+    if (status !== 'ready') {
+      setCookingChoice(choice);
+      onSelectChoice(choice);
+    } else {
+      onSelectChoice(choice);
+    }
+  };
+
   const hasChoices = episode.choices && episode.choices.length > 0;
 
   return (
-    <div
-      style={{
-        marginTop: '28px',
-        padding: '28px',
-        borderRadius: 'var(--radius-lg)',
-        background: 'rgba(17, 19, 28, 0.9)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(0, 240, 255, 0.3)',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 240, 255, 0.15)',
-        animation: 'cardMaterialize 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-      }}
+    <div 
+      style={{ 
+        position: 'absolute', inset: 0, 
+        display: 'flex', flexDirection: 'column', 
+        alignItems: 'center', justifyContent: 'center',
+        zIndex: 50,
+        pointerEvents: 'none'
+      }} 
     >
-      {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          marginBottom: '20px',
-          paddingBottom: '16px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: hasChoices
-                ? 'linear-gradient(135deg, #00f0ff, #a855f7)'
-                : 'linear-gradient(135deg, #10b981, #00f0ff)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {hasChoices ? (
-              <GitFork size={18} color="#07070a" strokeWidth={2.5} />
-            ) : (
-              <CheckCircle2 size={18} color="#07070a" strokeWidth={2.5} />
-            )}
-          </div>
-          <div>
-            <h3 style={{ fontSize: '1.25rem', color: '#fff' }}>
-              {hasChoices ? 'What Happens Next?' : 'Story Branch Completed'}
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              {hasChoices
-                ? 'Choose your path to unlock the next episode in your story journey.'
-                : 'You have reached a divergent ending. Explore other paths or pitch a twist below!'}
+      {/* Global scanline effect over the video when choices are up */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'repeating-linear-gradient(transparent 0, rgba(0, 240, 255, 0.03) 2px, transparent 4px)',
+        animation: 'scanlines 20s linear infinite',
+        zIndex: -1
+      }} />
+
+      <div className="hologram-container" style={{
+        animation: isGlitching ? 'cyber-glitch 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both' : 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '20px',
+        width: '90%',
+        maxWidth: '900px',
+        position: 'relative',
+        pointerEvents: 'auto'
+      }}>
+        {/* Decorative corner brackets */}
+        <div className="cyber-bracket cyber-bracket-tl" />
+        <div className="cyber-bracket cyber-bracket-tr" />
+        <div className="cyber-bracket cyber-bracket-bl" />
+        <div className="cyber-bracket cyber-bracket-br" />
+
+        {cookingChoice ? (
+          <div className="cyber-panel" style={{ padding: '24px 60px', width: '100%', textAlign: 'center' }}>
+            <h2 className="text-cyber-glow" style={{ fontSize: '2.4rem', fontWeight: 700, margin: 0, color: '#0ff', letterSpacing: '0.5px', fontFamily: "'Inter', sans-serif" }}>
+              BRILLIANT CHOICE, DIRECTOR.
+            </h2>
+            <p style={{ color: '#fff', fontSize: '1.2rem', marginTop: '16px', textShadow: '0 0 5px #fff' }}>
+              Your exclusive episode for <strong style={{ color: '#f0f' }}>"{cookingChoice.label}"</strong> is rendering in the AI engine.
             </p>
+            <div style={{ marginTop: '30px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
+              <Link href="/" style={{ color: '#0ff', textDecoration: 'none', border: '1px solid #0ff', padding: '10px 20px', fontWeight: 'bold' }}>
+                EXPLORE OTHER STORIES
+              </Link>
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCookingChoice(null); onRewatch(); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>
+                REWATCH EPISODE
+              </button>
+            </div>
           </div>
-        </div>
-
-        <button
-          onClick={onRewatch}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '8px 14px',
-            borderRadius: 'var(--radius-md)',
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: 'var(--text-primary)',
-            fontSize: '0.84rem',
-            fontWeight: 600,
-          }}
-        >
-          <RotateCcw size={14} />
-          <span>Rewatch Episode</span>
-        </button>
+        ) : hasChoices ? (
+          <>
+            <div className="cyber-panel" style={{ padding: '24px 60px', width: '100%', textAlign: 'center' }}>
+              <h2 className="text-cyber-glow" style={{ fontSize: '2.4rem', fontWeight: 700, margin: 0, color: '#fff', letterSpacing: '0.5px', fontFamily: "'Inter', sans-serif" }}>
+                {episode.choiceQuestion || 'Choose your path...'}
+              </h2>
+              <div style={{ position: 'absolute', right: '30px', top: '50%', transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', gap: '3px', opacity: 0.6 }}>
+                <div style={{ width: '40px' }} />
+                <div style={{ width: '25px' }} />
+                <div style={{ width: '15px' }} />
+                <div style={{ width: '30px' }} />
+                <div style={{ width: '20px' }} />
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+              {episode.choices.map((choice, idx) => (
+                <PathCard
+                  key={choice.id}
+                  choice={choice}
+                  index={idx}
+                  onSelect={handleChoiceClick}
+                  videoStatus={videoStatusMap[choice.targetEpisodeId] || 'ready'}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="cyber-panel" style={{ padding: '24px 60px', width: '100%', textAlign: 'center' }}>
+            <h2 className="text-cyber-glow" style={{ fontSize: '2.4rem', fontWeight: 700, margin: 0, color: '#f0f', letterSpacing: '0.5px', fontFamily: "'Inter', sans-serif", textShadow: '0 0 10px rgba(255,0,255,0.8)' }}>
+              {episode.isSeriesFinale ? 'SEASON FINALE REACHED' : 'PROCESSING BRANCH...'}
+            </h2>
+            <div style={{ marginTop: '20px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
+              <Link href="/" style={{ color: '#0ff', textDecoration: 'none', border: '1px solid #0ff', padding: '10px 20px', fontWeight: 'bold' }}>
+                RETURN TO HOME
+              </Link>
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRewatch(); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>
+                REWATCH EPISODE
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Choice Grid or Ending Banner */}
-      {hasChoices ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '16px',
-          }}
-        >
-          {episode.choices.map((choice, idx) => (
-            <PathCard
-              key={choice.id}
-              choice={choice}
-              index={idx}
-              onSelect={onSelectChoice}
-            />
-          ))}
-        </div>
-      ) : (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '32px 16px',
-            background: 'rgba(24, 27, 40, 0.5)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px dashed rgba(255, 255, 255, 0.12)',
-          }}
-        >
-          <Sparkles size={36} color="#10b981" style={{ margin: '0 auto 12px auto' }} />
-          <h4 style={{ fontSize: '1.2rem', marginBottom: '8px', color: '#fff' }}>
-            Congratulations, You Reached an Ending!
-          </h4>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto 20px auto' }}>
-            Your unique journey has concluded. Want to see how the other choices played out?
-          </p>
-          <Link
-            href={`/series/${seriesId}`}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '10px 20px',
-              borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(135deg, #00f0ff, #a855f7)',
-              color: '#07070a',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-            }}
-          >
-            <GitFork size={16} />
-            <span>Explore Alternate Branches</span>
-          </Link>
-        </div>
-      )}
     </div>
   );
 }

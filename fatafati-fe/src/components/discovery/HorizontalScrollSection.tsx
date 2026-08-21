@@ -30,11 +30,13 @@ export function HorizontalScrollSection({
         }}
       >
         <h2
+          className="text-cyber-glow"
           style={{
             fontSize: '1.25rem',
             fontWeight: 700,
-            color: '#fff',
+            color: '#00f0ff',
             letterSpacing: '0.01em',
+            textTransform: 'uppercase',
           }}
         >
           {title}

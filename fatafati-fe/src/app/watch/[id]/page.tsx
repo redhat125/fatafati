@@ -24,6 +24,7 @@ export default function WatchEpisodePage() {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<{ id: string; title: string; episodeNumber: number; choicePrompt?: string | null }>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [videoStatusMap, setVideoStatusMap] = useState<Record<string, 'ready' | 'generating' | 'scheduled'>>({});
   
   // States for Overlays
   const [showChoices, setShowChoices] = useState<boolean>(false);
@@ -41,6 +42,22 @@ export default function WatchEpisodePage() {
       setEpisode(data.episode);
       setSeries(data.series);
       setBreadcrumbs(data.breadcrumbs);
+
+      // Fetch video statuses for all target episodes of choices
+      if (data.episode.choices && data.episode.choices.length > 0) {
+        const statuses: Record<string, 'ready' | 'generating' | 'scheduled'> = {};
+        await Promise.all(data.episode.choices.map(async (c) => {
+          try {
+            const targetData = await api.getEpisode(c.targetEpisodeId);
+            statuses[c.targetEpisodeId] = targetData.episode.videoStatus || 'ready';
+          } catch (e) {
+            statuses[c.targetEpisodeId] = 'ready'; // Fallback
+          }
+        }));
+        setVideoStatusMap(statuses);
+      } else {
+        setVideoStatusMap({});
+      }
 
       // Record user journey progression
       api.saveJourney(data.series.id, data.episode.id).catch(console.error);
@@ -73,11 +90,18 @@ export default function WatchEpisodePage() {
 
   const handleChoiceSelect = async (choice: EpisodeChoice) => {
     try {
-      await api.choosePath(choice.id);
-      router.push(`/watch/${choice.targetEpisodeId}`);
+      await api.choosePath(episodeId!, choice.id);
+      
+      const status = videoStatusMap[choice.targetEpisodeId] || 'ready';
+      if (status === 'ready') {
+        router.push(`/watch/${choice.targetEpisodeId}`);
+      }
     } catch (err) {
       console.error('Failed to record choice:', err);
-      router.push(`/watch/${choice.targetEpisodeId}`);
+      // Fallback route on error if ready
+      if (videoStatusMap[choice.targetEpisodeId] !== 'generating') {
+        router.push(`/watch/${choice.targetEpisodeId}`);
+      }
     }
   };
 
@@ -133,12 +157,31 @@ export default function WatchEpisodePage() {
 
       {/* Choice Cards Overlay (Shown on video end) */}
       {showChoices && (
-        <ChoiceCardsOverlay
-          episode={episode}
-          seriesId={series.id}
-          onSelectChoice={handleChoiceSelect}
-          onRewatch={() => setShowChoices(false)}
-        />
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 50,
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px',
+          }}
+        >
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 50, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <ChoiceCardsOverlay 
+              episode={episode} 
+              onSelectChoice={handleChoiceSelect} 
+              onRewatch={() => setShowChoices(false)} 
+              seriesId={series!.id}
+              videoStatusMap={videoStatusMap}
+            />
+          </div>
+        </div>
       )}
 
       {/* Bottom Sheet Overlays */}

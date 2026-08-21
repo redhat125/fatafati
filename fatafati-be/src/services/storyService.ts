@@ -98,7 +98,33 @@ export class StoryService {
     };
   }
 
-  async choosePath(choiceId: string): Promise<void> {
+  async choosePath(sessionId: string, episodeId: string, choiceId: string): Promise<void> {
     await this.repo.recordChoicePick(choiceId);
+    await this.repo.recordUserChoice(sessionId, episodeId, choiceId);
+  }
+
+  // --- Admin Methods ---
+  async upsertSeries(series: Series): Promise<Series> {
+    return this.repo.upsertSeries(series);
+  }
+
+  async upsertEpisode(episode: Episode): Promise<Episode> {
+    return this.repo.upsertEpisode(episode);
+  }
+
+  async upsertEpisodeChoice(choice: import('@fatafati/common').EpisodeChoice & { episodeId: string }): Promise<import('@fatafati/common').EpisodeChoice> {
+    return this.repo.upsertEpisodeChoice(choice);
+  }
+
+  async deleteEpisode(id: string): Promise<void> {
+    return this.repo.deleteEpisode(id);
+  }
+
+  async deleteSeries(id: string): Promise<void> {
+    return this.repo.deleteSeries(id);
+  }
+
+  async deleteEpisodeChoice(id: string): Promise<void> {
+    return this.repo.deleteEpisodeChoice(id);
   }
 }

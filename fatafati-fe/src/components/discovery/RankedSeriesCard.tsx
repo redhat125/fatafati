@@ -44,9 +44,11 @@ export function RankedSeriesCard({ series, rank }: RankedSeriesCardProps) {
             fontWeight: 900,
             lineHeight: 0.8,
             color: 'transparent',
-            WebkitTextStroke: '2px #ffffff',
+            WebkitTextStroke: isHovered ? '2px #00f0ff' : '2px #ffffff',
+            textShadow: isHovered ? '0 0 20px rgba(0,240,255,0.6)' : 'none',
             zIndex: 1,
             pointerEvents: 'none',
+            transition: 'all 0.3s ease',
           }}
         >
           {rank}
@@ -58,9 +60,10 @@ export function RankedSeriesCard({ series, rank }: RankedSeriesCardProps) {
             marginLeft: '40px', // Space for the number
             width: '150px',
             position: 'relative',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: 0,
+            clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
             background: 'var(--bg-card)',
-            border: isHovered ? '1px solid rgba(0, 240, 255, 0.45)' : '1px solid rgba(255, 255, 255, 0.08)',
+            border: isHovered ? '2px solid #00f0ff' : '1px solid rgba(255, 255, 255, 0.1)',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',

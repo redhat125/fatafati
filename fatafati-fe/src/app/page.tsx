@@ -23,7 +23,14 @@ export default function HomePage() {
   const allTimeClassics = [...seriesList].sort((a, b) => (b.rating || 0) - (a.rating || 0));
 
   return (
-    <div style={{ paddingBottom: '20px' }}>
+    <div style={{ paddingBottom: '20px', position: 'relative' }}>
+      {/* Global Background Scanlines */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'repeating-linear-gradient(transparent 0, rgba(0, 240, 255, 0.02) 2px, transparent 4px)',
+        animation: 'scanlines 20s linear infinite',
+        zIndex: -1
+      }} />
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-secondary)' }}>
           <Sparkles size={32} color="#ec4899" style={{ margin: '0 auto 12px auto' }} />
@@ -78,12 +85,14 @@ export default function HomePage() {
           {allTimeClassics.length > 0 && (
             <section style={{ margin: '24px 16px 40px 16px' }}>
               <h2
+                className="text-cyber-glow"
                 style={{
                   fontSize: '1.25rem',
                   fontWeight: 700,
-                  color: '#fff',
+                  color: '#00f0ff',
                   letterSpacing: '0.01em',
                   marginBottom: '16px',
+                  textTransform: 'uppercase',
                 }}
               >
                 Top Dramas Of All Time

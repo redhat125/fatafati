@@ -32,13 +32,20 @@ export async function getEpisodeById(req: Request, res: Response, next: NextFunc
 
 export async function choosePath(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { choiceId } = req.body;
-    if (!choiceId) {
-      res.status(400).json({ success: false, error: 'choiceId is required' });
+    const { choiceId, episodeId } = req.body;
+    const sessionId = req.sessionId;
+
+    if (!choiceId || !episodeId) {
+      res.status(400).json({ success: false, error: 'choiceId and episodeId are required' });
       return;
     }
 
-    await storyService.choosePath(choiceId);
+    if (!sessionId) {
+      res.status(401).json({ success: false, error: 'Unauthorized' });
+      return;
+    }
+
+    await storyService.choosePath(sessionId, episodeId, choiceId);
     res.json({ success: true, message: 'Choice recorded' });
   } catch (error) {
     next(error);

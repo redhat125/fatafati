@@ -83,8 +83,7 @@ describe('FataFati Frontend Component Suite', () => {
       const handleSelect = vi.fn();
       render(<PathCard choice={mockChoice} onSelect={handleSelect} index={0} />);
 
-      expect(screen.getByText('Hack the Corp Server')).toBeDefined();
-      expect(screen.getByText('58% chose this')).toBeDefined();
+      expect(screen.getByText('A. Option A')).toBeDefined();
 
       const button = screen.getByRole('button');
       fireEvent.click(button);

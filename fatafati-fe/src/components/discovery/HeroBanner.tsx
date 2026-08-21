@@ -61,6 +61,12 @@ export function HeroBanner({ seriesList }: HeroBannerProps) {
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.05)',
         }}
       >
+        {/* Decorative corner brackets */}
+        <div className="cyber-bracket cyber-bracket-tl" style={{ zIndex: 10, borderColor: '#ec4899' }} />
+        <div className="cyber-bracket cyber-bracket-tr" style={{ zIndex: 10, borderColor: '#ec4899' }} />
+        <div className="cyber-bracket cyber-bracket-bl" style={{ zIndex: 10, borderColor: '#ec4899' }} />
+        <div className="cyber-bracket cyber-bracket-br" style={{ zIndex: 10, borderColor: '#ec4899' }} />
+
         {/* Animated Carousel Items */}
         {seriesList.map((series, index) => (
           <div
@@ -129,13 +135,13 @@ export function HeroBanner({ seriesList }: HeroBannerProps) {
 
               {/* Title */}
               <h1
+                className="text-cyber-glow"
                 style={{
                   fontSize: 'clamp(2rem, 8vw, 3rem)',
                   lineHeight: 1,
                   fontWeight: 800,
                   color: '#fff',
                   marginBottom: '16px',
-                  textShadow: '0 4px 16px rgba(0,0,0,0.8)',
                   textTransform: 'uppercase',
                   letterSpacing: '-0.02em',
                 }}
@@ -146,21 +152,12 @@ export function HeroBanner({ seriesList }: HeroBannerProps) {
               {/* Watch Now Button */}
               <Link href={`/watch/${series.rootEpisodeId}`} style={{ textDecoration: 'none', width: '100%', maxWidth: '240px' }}>
                 <button
+                  className="cyber-btn"
                   style={{
                     width: '100%',
-                    padding: '12px 24px',
-                    borderRadius: 'var(--radius-full)',
-                    background: 'var(--accent-magenta)',
-                    color: '#fff',
-                    fontSize: '1rem',
-                    fontWeight: 700,
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
-                    boxShadow: '0 4px 16px rgba(236, 72, 153, 0.4)',
-                    cursor: 'pointer',
+                    borderColor: '#ec4899',
+                    boxShadow: '0 0 15px rgba(236, 72, 153, 0.4), inset 0 0 10px rgba(236, 72, 153, 0.2)',
                   }}
                 >
                   Watch Now <Play size={18} fill="#fff" />

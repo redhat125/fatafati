@@ -116,16 +116,6 @@ export function CinematicVideoPlayer({
       } else {
         videoRef.current.play();
         setIsPlaying(true);
-        // Attempt to enter fullscreen on mobile devices when playing starts
-        if (containerRef.current && window.innerWidth < 768 && !document.fullscreenElement) {
-          try {
-            if (containerRef.current.requestFullscreen) {
-              containerRef.current.requestFullscreen().catch(() => {});
-            } else if ((containerRef.current as any).webkitRequestFullscreen) {
-              (containerRef.current as any).webkitRequestFullscreen();
-            }
-          } catch (e) {}
-        }
       }
     }
   };
@@ -150,7 +140,7 @@ export function CinematicVideoPlayer({
       style={{
         position: 'relative',
         width: '100%',
-        height: '100vh',
+        height: '100dvh',
         backgroundColor: '#000',
         overflow: 'hidden',
       }}

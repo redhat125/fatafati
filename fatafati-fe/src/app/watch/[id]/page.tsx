@@ -108,7 +108,7 @@ export default function WatchEpisodePage() {
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100dvh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
         <Sparkles size={36} color="#00f0ff" style={{ marginBottom: '16px' }} />
         <p>Entering interactive cinema universe...</p>
       </div>
@@ -117,7 +117,7 @@ export default function WatchEpisodePage() {
 
   if (error || !episode || !series) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100dvh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
         <h2 style={{ color: '#ef4444', marginBottom: '12px' }}>Episode Not Found</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>{error || 'Unable to retrieve episode.'}</p>
         <Link
@@ -142,19 +142,28 @@ export default function WatchEpisodePage() {
 
   return (
     <>
-      {/* Full Screen Cinematic Player */}
-      <CinematicVideoPlayer
-        videoUrl={episode.videoUrl}
-        posterUrl={episode.thumbnailUrl || series.backdropImage}
-        title={episode.title}
-        seriesTitle={series.title}
-        viewCount={1240} // Mock data for view count
-        onVideoEnd={handleVideoEnd}
-        autoPlay={true}
-        onOpenMap={() => setActiveSheet('map')}
-        onOpenComments={() => setActiveSheet('comments')}
-        onOpenDetails={() => setActiveSheet('details')}
-      />
+      {/* 
+        This empty tall div creates artificial scroll space on mobile.
+        When the user swipes, the page scrolls, which natively triggers mobile browsers 
+        (like Chrome on Android) to hide the URL bar.
+      */}
+      <div style={{ height: '150vh', width: '1px', position: 'absolute', top: 0, zIndex: -1 }} />
+
+      {/* Fixed Full Screen Container so UI is never pushed off-screen */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
+        <CinematicVideoPlayer
+          videoUrl={episode.videoUrl}
+          posterUrl={episode.thumbnailUrl || series.backdropImage}
+          title={episode.title}
+          seriesTitle={series.title}
+          viewCount={1240} // Mock data for view count
+          onVideoEnd={handleVideoEnd}
+          autoPlay={true}
+          onOpenMap={() => setActiveSheet('map')}
+          onOpenComments={() => setActiveSheet('comments')}
+          onOpenDetails={() => setActiveSheet('details')}
+        />
+      </div>
 
       {/* Choice Cards Overlay (Shown on video end) */}
       {showChoices && (

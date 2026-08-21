@@ -108,7 +108,7 @@ export default function WatchEpisodePage() {
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100dvh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
         <Sparkles size={36} color="#00f0ff" style={{ marginBottom: '16px' }} />
         <p>Entering interactive cinema universe...</p>
       </div>
@@ -117,7 +117,7 @@ export default function WatchEpisodePage() {
 
   if (error || !episode || !series) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100dvh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#000', color: 'var(--text-secondary)' }}>
         <h2 style={{ color: '#ef4444', marginBottom: '12px' }}>Episode Not Found</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>{error || 'Unable to retrieve episode.'}</p>
         <Link

@@ -11,7 +11,6 @@ interface PathCardProps {
 }
 
 export function PathCard({ choice, onSelect, index, videoStatus = 'ready' }: PathCardProps) {
-  const letters = ['A', 'B', 'C', 'D'];
   // Fallback to the first word of the text if label is missing
   const label = choice.label || choice.text.split(' ')[0] || `Option ${index + 1}`;
 
@@ -52,20 +51,7 @@ export function PathCard({ choice, onSelect, index, videoStatus = 'ready' }: Pat
         e.currentTarget.style.textShadow = 'none';
       }}
     >
-      <span>{letters[index] || '•'}. {label}</span>
-      {videoStatus === 'generating' && (
-        <span style={{
-          fontSize: '0.8rem',
-          color: '#f0f',
-          animation: 'pulse 1s infinite',
-          border: '1px solid rgba(255, 0, 255, 0.5)',
-          padding: '2px 8px',
-          background: 'rgba(255, 0, 255, 0.1)',
-          clipPath: 'polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px)',
-        }}>
-          [RENDERING]
-        </span>
-      )}
+      <span>{label}</span>
     </button>
   );
 }

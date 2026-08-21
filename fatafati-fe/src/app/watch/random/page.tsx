@@ -341,9 +341,10 @@ export default function RandomWatchPage() {
                       fontSize: '0.72rem',
                       fontWeight: 700,
                       padding: '2px 8px',
-                      borderRadius: '4px',
+                      borderRadius: 0,
+                      clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
                       background: 'rgba(236, 72, 153, 0.2)',
-                      border: '1px solid rgba(236, 72, 153, 0.4)',
+                      border: '1px solid rgba(236, 72, 153, 0.6)',
                       color: '#ec4899',
                     }}
                   >
@@ -352,7 +353,7 @@ export default function RandomWatchPage() {
                 )}
               </div>
               
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px' }}>
+              <h2 className="text-cyber-glow" style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: '#fff' }}>
                 {feedItems[activeIndex].episode.title}
               </h2>
               
@@ -369,8 +370,10 @@ export default function RandomWatchPage() {
                     style={{
                       fontSize: '0.75rem',
                       padding: '4px 12px',
-                      background: 'rgba(255, 255, 255, 0.08)',
-                      borderRadius: '16px',
+                      background: 'rgba(0, 240, 255, 0.05)',
+                      borderRadius: 0,
+                      clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
+                      border: '1px solid rgba(0, 240, 255, 0.2)',
                       color: 'var(--text-muted)',
                     }}
                   >

@@ -20,10 +20,8 @@ export function CommunityVoice({ episodeId }: CommunityVoiceProps) {
         marginTop: '36px',
         padding: '24px 20px',
         borderRadius: 'var(--radius-lg)',
-        background: 'rgba(17, 19, 28, 0.8)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'transparent',
+        border: 'none',
         scrollMarginTop: '80px',
       }}
     >
@@ -80,12 +78,10 @@ export function CommunityVoice({ episodeId }: CommunityVoiceProps) {
           </div>
         ) : comments.length === 0 ? (
           <div
+            className="cyber-panel"
             style={{
               textAlign: 'center',
               padding: '36px 16px',
-              background: 'rgba(255, 255, 255, 0.02)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px dashed rgba(255, 255, 255, 0.1)',
             }}
           >
             <Sparkles size={28} color="#a855f7" style={{ margin: '0 auto 8px auto' }} />
@@ -107,13 +103,14 @@ export function CommunityVoice({ episodeId }: CommunityVoiceProps) {
                   flexDirection: 'column',
                   gap: '10px',
                   padding: '18px 20px',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 0,
+                  clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
                   background: isTopRanked
                     ? 'rgba(0, 240, 255, 0.05)'
                     : 'rgba(24, 27, 40, 0.5)',
                   border: isTopRanked
-                    ? '1px solid rgba(0, 240, 255, 0.3)'
-                    : '1px solid rgba(255, 255, 255, 0.06)',
+                    ? '2px solid rgba(0, 240, 255, 0.5)'
+                    : '1px solid rgba(255, 255, 255, 0.1)',
                   boxShadow: isTopRanked ? '0 0 20px rgba(0, 240, 255, 0.15)' : 'none',
                   transition: 'all 0.2s ease',
                 }}

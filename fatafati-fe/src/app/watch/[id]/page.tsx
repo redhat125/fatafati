@@ -228,9 +228,10 @@ export default function WatchEpisodePage() {
                   fontSize: '0.72rem',
                   fontWeight: 700,
                   padding: '2px 8px',
-                  borderRadius: '4px',
+                  borderRadius: 0,
+                  clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
                   background: 'rgba(236, 72, 153, 0.2)',
-                  border: '1px solid rgba(236, 72, 153, 0.4)',
+                  border: '1px solid rgba(236, 72, 153, 0.6)',
                   color: '#ec4899',
                 }}
               >
@@ -239,7 +240,7 @@ export default function WatchEpisodePage() {
             )}
           </div>
           
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px' }}>{episode.title}</h2>
+          <h2 className="text-cyber-glow" style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: '#fff' }}>{episode.title}</h2>
           
           {episode.synopsis && (
             <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '24px' }}>
@@ -247,7 +248,7 @@ export default function WatchEpisodePage() {
             </p>
           )}
 
-          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', marginBottom: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+          <h3 className="text-cyber-glow" style={{ fontSize: '1rem', fontWeight: 600, color: '#00f0ff', marginBottom: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px', textTransform: 'uppercase' }}>
             Branch Timeline
           </h3>
           <BranchTimeline

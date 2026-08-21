@@ -53,10 +53,8 @@ export function StoryJourneyTree({ seriesId, currentEpisodeId }: StoryJourneyTre
       style={{
         padding: '24px 20px',
         borderRadius: 'var(--radius-lg)',
-        background: 'rgba(17, 19, 28, 0.75)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'transparent',
+        border: 'none',
         marginTop: '32px',
         scrollMarginTop: '80px',
       }}
@@ -127,17 +125,18 @@ export function StoryJourneyTree({ seriesId, currentEpisodeId }: StoryJourneyTre
                       flexDirection: 'column',
                       gap: '6px',
                       padding: '14px',
-                      borderRadius: 'var(--radius-md)',
+                      borderRadius: 0,
+                      clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
                       background: isCurrent
                         ? 'rgba(0, 240, 255, 0.12)'
                         : node.isLeaf
                         ? 'rgba(236, 72, 153, 0.08)'
                         : 'rgba(255, 255, 255, 0.03)',
                       border: isCurrent
-                        ? '1px solid #00f0ff'
+                        ? '2px solid #00f0ff'
                         : node.isLeaf
-                        ? '1px solid rgba(236, 72, 153, 0.3)'
-                        : '1px solid rgba(255, 255, 255, 0.08)',
+                        ? '2px solid rgba(236, 72, 153, 0.5)'
+                        : '1px solid rgba(255, 255, 255, 0.15)',
                       boxShadow: isCurrent ? '0 0 20px rgba(0, 240, 255, 0.3)' : 'none',
                       transition: 'all 0.2s ease',
                       position: 'relative',

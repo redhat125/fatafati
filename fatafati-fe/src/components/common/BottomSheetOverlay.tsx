@@ -56,21 +56,23 @@ export function BottomSheetOverlay({
           left: 0,
           right: 0,
           height: height,
-          background: 'var(--bg-primary)',
-          borderTopLeftRadius: '24px',
-          borderTopRightRadius: '24px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          background: 'rgba(15, 25, 40, 0.95)',
+          borderTopLeftRadius: '0',
+          borderTopRightRadius: '0',
+          clipPath: 'polygon(24px 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%, 0 24px)',
+          borderTop: '2px solid #00f0ff',
           zIndex: 101,
           transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
           transition: 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.5)',
+          boxShadow: '0 -10px 40px rgba(0, 240, 255, 0.2), inset 0 20px 40px rgba(0, 240, 255, 0.05)',
+          backdropFilter: 'blur(20px)',
         }}
       >
         {/* Drag Handle Indicator */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '12px', paddingBottom: '4px' }} onClick={onClose}>
-          <div style={{ width: '40px', height: '4px', background: 'rgba(255, 255, 255, 0.2)', borderRadius: '2px' }} />
+          <div style={{ width: '40px', height: '4px', background: 'rgba(0, 240, 255, 0.5)', borderRadius: '2px' }} />
         </div>
 
         {/* Header */}
@@ -83,7 +85,7 @@ export function BottomSheetOverlay({
             borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
           }}
         >
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>{title}</h3>
+          <h3 className="text-cyber-glow" style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: '#00f0ff', textTransform: 'uppercase' }}>{title}</h3>
           <button
             onClick={onClose}
             style={{

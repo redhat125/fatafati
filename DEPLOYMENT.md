@@ -48,11 +48,13 @@ Before starting, ensure you have:
 2. Set a secure database password and choose your nearest region.
 
 ### 1.2 Run the Database Schema & RLS Policies
+*(Note: Schema changes are applied via raw SQL, which bypasses the REST API. You can safely apply or update your schema via the Supabase Dashboard without needing your database password).*
 1. In your Supabase Dashboard, click **SQL Editor** (left sidebar) → **New query**.
 2. Copy and paste the entire content of [`fatafati-be/src/db/schema.sql`](fatafati-be/src/db/schema.sql):
    - Creates `series`, `episodes`, `episode_choices`, `comments`, `comment_votes`, `user_journeys`.
    - Enables Row Level Security (RLS) with public access policies.
 3. Click **Run**.
+   *(Because the SQL script is idempotent, you can copy-paste and run it multiple times to safely update your tables/policies in production).*
 
 ### 1.3 Create the Public Video Storage Bucket
 1. In Supabase Dashboard, click **Storage** (left sidebar) → **New bucket**.

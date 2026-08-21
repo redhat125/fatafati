@@ -118,8 +118,8 @@ export function AdminChoiceForm({ episodeId, choices, allEpisodes, onSave, onDel
                   </div>
                 </div>
                 <label style={labelStyle}>Target Episode ID</label>
-                <select name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange as any} style={inputStyle} required>
-                  <option value="" disabled>Select target episode...</option>
+                <select name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange as any} style={inputStyle}>
+                  <option value="">Pending / To Be Created...</option>
                   {allEpisodes.filter(e => e.id !== episodeId).map(e => (
                     <option key={e.id} value={e.id}>Ep {e.episodeNumber}: {e.title}</option>
                   ))}
@@ -166,8 +166,8 @@ export function AdminChoiceForm({ episodeId, choices, allEpisodes, onSave, onDel
               </div>
             </div>
             <label style={labelStyle}>Target Episode ID</label>
-            <select name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange as any} style={inputStyle} required>
-              <option value="" disabled>Select target episode...</option>
+            <select name="targetEpisodeId" value={formData.targetEpisodeId || ''} onChange={handleChange as any} style={inputStyle}>
+              <option value="">Pending / To Be Created...</option>
               {allEpisodes.filter(e => e.id !== episodeId).map(e => (
                 <option key={e.id} value={e.id}>Ep {e.episodeNumber}: {e.title}</option>
               ))}

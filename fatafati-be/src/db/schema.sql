@@ -54,7 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_episodes_parent ON episodes (parent_episode_id);
 CREATE TABLE IF NOT EXISTS episode_choices (
     id TEXT PRIMARY KEY,
     episode_id TEXT NOT NULL REFERENCES episodes (id) ON DELETE CASCADE,
-    target_episode_id TEXT NOT NULL REFERENCES episodes (id) ON DELETE CASCADE,
+    target_episode_id TEXT REFERENCES episodes (id) ON DELETE SET NULL,
     label TEXT NOT NULL,
     text TEXT NOT NULL,
     description TEXT,
@@ -204,4 +204,7 @@ CREATE POLICY "Public can update user_choices" ON user_choices FOR UPDATE USING 
 -- ========================================================================
 GRANT ALL ON ALL TABLES IN SCHEMA public TO postgres, anon, authenticated, service_role;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO postgres, anon, authenticated, service_role;
-GRANT ALL ON ALL ROUTINES IN SCHEMA public TO postgres, anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA public TO postgres, anon, authenticated, service_role;-- Migration: Make target_episode_id nullable for pending generation choices
+ALTER TABLE episode_choices ALTER COLUMN target_episode_id DROP NOT NULL;
+ALTER TABLE episode_choices DROP CONSTRAINT IF EXISTS episode_choices_target_episode_id_fkey;
+ALTER TABLE episode_choices ADD CONSTRAINT episode_choices_target_episode_id_fkey FOREIGN KEY (target_episode_id) REFERENCES episodes(id) ON DELETE SET NULL;
